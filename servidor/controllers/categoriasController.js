@@ -31,7 +31,7 @@ exports.eliminarCategoria = async (req, res) => {
     try {
         const { id } = req.params;
         const deleted = await Categoria.destroy({
-            where: {id_categoria: id},
+            where: {id_categoria_profesional: id},
         });
         if(deleted){
             res.status(204).json({ message: "Categoría eliminada con éxito" });

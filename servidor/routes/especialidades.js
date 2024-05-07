@@ -4,5 +4,7 @@ const especialidadesController = require('../controllers/especialidadesControlle
 
 router.get('/', especialidadesController.listarEspecialidades);
 router.post('/', especialidadesController.crearEspecialidad);
+router.put('/:id', especialidadesController.modificarEspecialidad);
+router.delete('/:id', especialidadesController.eliminarEspecialidad);
 
 module.exports = router;
