@@ -1,12 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sequelize = require('./database'); // Asegúrate de que el path al archivo de configuración de la DB sea correcto
+const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');  // Asegúrate de que el path al archivo de configuración de la DB sea correcto
 
 // Importar rutas
 const pacientesRoutes = require('./routes/pacientes');
 const empleadosRoutes = require('./routes/empleados');
 const categoriasRoutes = require('./routes/categorias');
 const especialidadesRoutes = require('./routes/especialidades');
+const historialesMedicosRoutes = require('./routes/historialesMedicos');
+const intervencionesRoutes = require('./routes/intervenciones');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,10 +21,18 @@ app.use('/pacientes', pacientesRoutes);
 app.use('/empleados', empleadosRoutes);
 app.use('/categorias', categoriasRoutes);
 app.use('/especialidades', especialidadesRoutes);
+app.use('/historialesMedicos', historialesMedicosRoutes);
+app.use('/intervenciones', intervencionesRoutes);
 
 // Ruta básica para comprobar que el servidor está funcionando
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente.');
+});
+
+// Manejo de errores no capturados
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Loguea el error
+    res.status(500).send('¡Algo salió mal!');
 });
 
 // Inicialización y sincronización de la base de datos

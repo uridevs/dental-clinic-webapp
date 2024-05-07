@@ -1,31 +1,43 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+// /models/Paciente.js
+module.exports = (sequelize, DataTypes) => {
+    return sequelize.define('Paciente', {
+        id_paciente: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        nombre: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        apellidos: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        dni: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        telefono: {
+            type: DataTypes.STRING
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        },
+        fecha_alta: {
+            type: DataTypes.DATE
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
+    }, {
+        timestamps: false,
+        tableName: 'Paciente'
+    });
+};
 
-const Paciente = sequelize.define('Paciente', {
-    id_paciente: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    dni: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    telefono: {
-        type: DataTypes.STRING
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
-    },
-    fecha_alta: {
-        type: DataTypes.DATE
-    }
-}, {
-    timestamps: false,
-    tableName: 'Paciente'
-});
 
-module.exports = Paciente;
