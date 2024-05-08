@@ -1,6 +1,31 @@
 // /controllers/intervencionesController.js
-const Intervencion = require('../models/Intervencion');
+const {sequelize, Intervencion}  = require("../database.js");
 const { Op } = require('sequelize');
+
+exports.listarIntervencion = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const intervencion = await Intervencion.findByPk(id);
+        if(intervencion){
+            res.json(intervencion);
+        }else{
+            res.status(200).json({message: "Error. Nº Intervención no encontrado"})
+        }
+        
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+exports.listarIntervenciones = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const intervenciones = await Intervencion.findAll();
+        res.status(200).json(intervenciones);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
 exports.listarIntervencionesPorDia = async (req, res) => {
     try {
@@ -17,6 +42,8 @@ exports.listarIntervencionesPorDia = async (req, res) => {
         res.status(500).send(error.message);
     }
 };
+
+
 
 exports.listarIntervencionesPorPaciente = async (req, res) => {
     try {
@@ -51,9 +78,8 @@ exports.crearIntervencion = async (req, res) => {
 exports.modificarIntervencion = async (req, res) => {
     try {
         const { id } = req.params;
-        const { fecha_hora, id_tipo_tratamiento, id_empleado, notas } = req.body;
+        const { id_tipo_tratamiento, id_empleado, notas } = req.body;
         const [ updated ] = await Intervencion.update({
-            fecha_hora,
             id_tipo_tratamiento,
             id_empleado,
             notas
@@ -79,7 +105,7 @@ exports.borrarIntervencion = async (req, res) => {
             where: { id_intervencion: id }
         });
         if (deleted) {
-            res.status(204).send("Intervención eliminada.");
+            res.status(200).json({message: "Intervención eliminada."});
         } else {
             throw new Error('Intervención no encontrada');
         }

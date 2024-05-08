@@ -1,5 +1,5 @@
 // /controllers/empleadosController.js
-const { sequelize, Empleado, HistorialMedico } = require("../database.js");
+const { sequelize, Empleado, Usuario } = require("../database.js");
 const bcrypt = require("bcryptjs");
 
 exports.listarEmpleados = async (req, res) => {
@@ -32,91 +32,116 @@ exports.listarEmpleado = async (req, res) => {
 exports.crearEmpleado = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-    const {
-      nombre,
-      apellidos,
-      dni,
-      telefono,
-      email,
-      id_categoria_profesional,
-      fecha_antiguedad,
-      password,
-    } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
+      const {
+          nombre,
+          apellidos,
+          dni,
+          telefono,
+          email,
+          id_categoria_profesional,
+          fecha_antiguedad,
+          password,
+      } = req.body;
 
-    const nuevoEmpleado = await Empleado.create({
-      nombre,
-      apellidos,
-      dni,
-      telefono,
-      email,
-      id_categoria_profesional,
-      fecha_antiguedad,
-      password: passwordHash,
-    });
+      // Crea el usuario asociado
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
 
-    await t.commit();
-    res
-      .status(201)
-      .json({ message: "Empleado creado con éxito", nuevoEmpleado });
+      const nuevoUsuario = await Usuario.create({
+          email,
+          password: passwordHash,
+          role: id_categoria_profesional 
+      }, { transaction: t });
+
+      // Crea el empleado vinculado al usuario creado
+      const nuevoEmpleado = await Empleado.create({
+          nombre,
+          apellidos,
+          dni,
+          telefono,
+          email,  // Sincronizar el email con la tabla Usuario
+          id_categoria_profesional,
+          fecha_antiguedad,
+          usuarioId: nuevoUsuario.id  // Vincular el ID de usuario al empleado
+      }, { transaction: t });
+
+      await t.commit();
+      res.status(201).json({ message: "Empleado creado con éxito", nuevoEmpleado });
   } catch (error) {
-    await t.rollback();
-    res.status(500).send(error.message);
+      await t.rollback();
+      res.status(500).send(error.message);
   }
 };
 
+
 exports.actualizarEmpleado = async (req, res) => {
-    try {
+  const t = await sequelize.transaction();
+  try {
       const { id } = req.params;
       const { nombre, apellidos, dni, telefono, email, id_categoria_profesional, fecha_antiguedad, password } = req.body;
-  
-      // Hashea la contraseña si está presente
-      let updateData = {
-        nombre,
-        apellidos,
-        dni,
-        telefono,
-        email,
-        id_categoria_profesional,
-        fecha_antiguedad
-      };
-  
-      if (password) {
-        const salt = await bcrypt.genSalt(10);
-        updateData.password = await bcrypt.hash(password, salt);
-      }
-  
-      const [updated] = await Empleado.update(updateData, {
-        where: { id_empleado: id }
+
+      // Encontrar empleado
+      const empleado = await Empleado.findByPk(id);
+      if (!empleado) throw new Error("Empleado no encontrado");
+
+      // Actualizar usuario relacionado
+      const usuario = await Usuario.findByPk(empleado.usuarioId, { transaction: t });
+      if (!usuario) throw new Error("Usuario del empleado no encontrado");
+
+      const passwordHash = password ? await bcrypt.hash(password, 10) : usuario.password;
+      await Usuario.update({
+          email,
+          password: passwordHash,
+      }, {
+          where: { id: empleado.usuarioId },
+          transaction: t
       });
-  
-      if (updated) {
-        const updatedEmpleado = await Empleado.findOne({
+
+      // Actualizar datos del empleado
+      await Empleado.update({
+          nombre,
+          apellidos,
+          dni,
+          telefono,
+          email,
+          id_categoria_profesional,
+          fecha_antiguedad
+      }, {
           where: { id_empleado: id },
-          attributes: { exclude: ['password'] } // Excluir el campo password de la respuesta
-        });
-        res.status(200).json({ message: "Empleado modificado con éxito", empleado: updatedEmpleado });
-      } else {
-        throw new Error("Empleado no encontrado");
-      }
-    } catch (error) {
+          transaction: t
+      });
+
+      await t.commit();
+      res.status(200).json({ message: "Empleado actualizado con éxito", empleado });
+  } catch (error) {
+      await t.rollback();
       res.status(500).send(error.message);
-    }
-  };
+  }
+};
 
 exports.eliminarEmpleado = async (req, res) => {
+  const t = await sequelize.transaction();
   try {
-    const { id } = req.params;
-    const deleted = await Empleado.destroy({
-      where: { id_empleado: id },
-    });
-    if (deleted) {
+      const { id } = req.params;
+      const empleado = await Empleado.findByPk(id);
+      if (!empleado) throw new Error("Empleado no encontrado");
+
+      // Eliminar usuario asociado
+      await Usuario.destroy({
+          where: { id: empleado.usuarioId },
+          transaction: t
+      });
+
+      // Eliminar empleado
+      await Empleado.destroy({
+          where: { id_empleado: id },
+          transaction: t
+      });
+
+      await t.commit();
       res.status(204).json({ message: "Empleado eliminado con éxito" });
-    } else {
-      throw new Error("Empleado no encontrado");
-    }
   } catch (error) {
-    res.status(500).send(error.message);
+      await t.rollback();
+      res.status(500).send(error.message);
   }
 };

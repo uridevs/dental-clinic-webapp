@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const intervencionesController = require('../controllers/intervencionesController');
 
+router.get('/', intervencionesController.listarIntervenciones);
+router.get('/:id', intervencionesController.listarIntervencion);
 router.get('/Dia/:fecha', intervencionesController.listarIntervencionesPorDia);
 router.get('/Paciente/:idPaciente', intervencionesController.listarIntervencionesPorPaciente);
 router.post('/', intervencionesController.crearIntervencion);

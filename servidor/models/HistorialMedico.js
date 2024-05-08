@@ -5,10 +5,6 @@ module.exports = (sequelize, DataTypes) => {
         id_historial: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            references: {
-                model: 'Paciente',
-                key: 'id_paciente'
-            }
         },
         observaciones: {
             type: DataTypes.TEXT,
@@ -18,4 +14,4 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false,
         tableName: 'HistorialMedico'
     });
-}
+};

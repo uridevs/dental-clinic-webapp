@@ -1,5 +1,5 @@
 // /controllers/tratamientosController.js
-const Tratamiento = require('../models/Tratamiento');
+const {sequelize, Tratamiento}  = require("../database.js");
 
 exports.listarTratamientos = async (req, res) => {
     try {
@@ -19,7 +19,7 @@ exports.crearTratamiento = async (req, res) => {
             descripcion_tratamiento,
             precio_tratamiento
         });
-        res.status(201).json(nuevoTratamiento);
+        res.status(201).json({message: "tratamiento creado con éxito",nuevoTratamiento});
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -40,7 +40,7 @@ exports.actualizarTratamiento = async (req, res) => {
 
         if (updated) {
             const updatedTratamiento = await Tratamiento.findOne({ where: { id_tipo_tratamiento: id } });
-            res.json(updatedTratamiento);
+            res.status(200).json({message: "tratamiento creado con éxito",updatedTratamiento})
         } else {
             throw new Error('Tratamiento no encontrado');
         }

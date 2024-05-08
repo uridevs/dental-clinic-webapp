@@ -37,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         fecha_antiguedad: {
             type: DataTypes.DATE
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
         }
     
     }, {

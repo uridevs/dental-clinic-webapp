@@ -21,8 +21,8 @@ exports.crearEspecialidad = async (req, res) => {
 exports.modificarEspecialidad = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nombre, descripcion } = req.body;
-        const [updated] = await Especialidad.update({ nombre, descripcion }, {
+        const { nombre_especialidad } = req.body;
+        const [updated] = await Especialidad.update({ nombre_especialidad }, {
             where: { id_especialidad: id }
         });
 

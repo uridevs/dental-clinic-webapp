@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
         fecha_alta: {
             type: DataTypes.DATE
         },
-        password: {
-            type: DataTypes.STRING,
+        usuarioId: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     }, {
