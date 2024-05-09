@@ -2,8 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const empleadosController = require('../controllers/empleadosController');
-// Importar validaciones
-
 const empleadosValidations = require('../validations/empleadosValidations');
 
 router.get('/', empleadosController.listarEmpleados);

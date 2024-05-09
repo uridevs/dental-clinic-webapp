@@ -20,7 +20,8 @@ const historialesMedicosRoutes = require('./routes/historialesMedicos');
 const intervencionesRoutes = require('./routes/intervenciones');
 const tratamientosRoutes = require('./routes/tratamientos');
 const usuariosRoutes = require('./routes/usuarios');
-const authRoutes = require('./routes/auth'); // Ajusta la ruta según la ubicación
+const authRoutes = require('./routes/auth');
+const citasRoutes = require('./routes/citas');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -40,6 +41,7 @@ app.use('/historialesMedicos', historialesMedicosRoutes);
 app.use('/intervenciones', intervencionesRoutes);
 app.use('/tratamientos', tratamientosRoutes);
 app.use('/usuarios', usuariosRoutes);
+app.use('/citas', citasRoutes);
 
 // Ruta básica para comprobar que el servidor está funcionando
 app.get('/', (req, res) => {

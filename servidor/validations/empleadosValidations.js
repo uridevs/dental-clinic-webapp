@@ -1,7 +1,7 @@
 const { body, validationResult } = require('express-validator');
 
 exports.validarCrearEmpleado = [
-    body('dni').isLength({ min: 9, max: 10 }).withMessage('DNI debe tener 9 o 10 caracteres'),
+    body('dni').isLength({ min: 9, max: 9 }).withMessage('DNI debe tener 9 caracteres'),
     body('email').isEmail().withMessage('Correo electrónico inválido'),
     body('nombre').not().isEmpty().withMessage('El nombre no puede estar vacío'),
     body('apellidos').not().isEmpty().withMessage('Los apellidos no pueden estar vacíos'),

@@ -3,11 +3,11 @@ const { Sequelize, DataTypes } = require("sequelize");
 
 // Configuración de Sequelize
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
+  process.env.DB_NAME_REMOTE,
+  process.env.DB_USER_REMOTE,
   process.env.DB_PASS,
   {
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOST_REMOTE,
     dialect: "mysql",
   }
 );
@@ -24,8 +24,9 @@ const Tratamiento = require("./models/Tratamiento")(sequelize, DataTypes);
 const Intervencion = require("./models/Intervencion")(sequelize, DataTypes);
 const Categoria = require("./models/Categoria")(sequelize, DataTypes);
 const Especialidad = require("./models/Especialidad")(sequelize, DataTypes);
+const Cita = require('./models/Cita')(sequelize, DataTypes);  // Asumiendo que has creado un archivo de modelo similar a los otros.
 
-//relaciones entre modelos si las hay
+//Relaciones entre modelos
 // Establece la relación uno a uno entre Paciente e HistorialMedico
 Paciente.hasOne(HistorialMedico, {
   foreignKey: "id_historial",
@@ -44,16 +45,15 @@ HistorialMedico.hasMany(Intervencion, {
 
 Intervencion.belongsTo(HistorialMedico, { foreignKey: "id_historial" });
 
+Paciente.belongsTo(Usuario, { foreignKey: "usuarioId", as: "usuario" });
+Usuario.hasOne(Paciente, { foreignKey: "usuarioId", as: "paciente" });
 
-Paciente.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
-Usuario.hasOne(Paciente, { foreignKey: 'usuarioId', as: 'paciente' });
-
-Empleado.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
-Usuario.hasOne(Empleado, { foreignKey: 'usuarioId', as: 'empleado' });
-
+Empleado.belongsTo(Usuario, { foreignKey: "usuarioId", as: "usuario" });
+Usuario.hasOne(Empleado, { foreignKey: "usuarioId", as: "empleado" });
 
 module.exports = {
   sequelize,
+  Cita,
   Usuario,
   Paciente,
   Empleado,
