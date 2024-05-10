@@ -1,4 +1,15 @@
 import React from 'react';
+
+const Header = () => {
+    return (
+        <header>
+            <nav>
+                {/* Navegación aquí */}
+                <h1>Barra de navegación</h1>
+            </nav>
+        </header>
+    );
+
 import Navbar from './Navbar';
 
 const Header = () => {
@@ -10,6 +21,7 @@ const Header = () => {
       <Navbar />
     </header>
   );
+
 };
 
 export default Header;
