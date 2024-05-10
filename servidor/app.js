@@ -25,7 +25,7 @@ const authRoutes = require('./routes/auth'); // Ajusta la ruta según la ubicaci
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Aplicar a todas las solicitudes
+// Aplicar a todas las solicitudesD
 app.use(apiLimiter);
 // Middleware para parsear el cuerpo de las solicitudes en formato JSON
 app.use(bodyParser.json());
