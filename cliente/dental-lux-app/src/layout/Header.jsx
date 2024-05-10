@@ -1,5 +1,8 @@
 import React from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b90ccc41bb15180ac8a4efe5aa5b47cffaa17f5f
 
 const Header = () => {
     return (
@@ -10,7 +13,11 @@ const Header = () => {
             </nav>
         </header>
     );
+<<<<<<< HEAD
 =======
+=======
+
+>>>>>>> b90ccc41bb15180ac8a4efe5aa5b47cffaa17f5f
 import Navbar from './Navbar';
 
 const Header = () => {
@@ -22,7 +29,11 @@ const Header = () => {
       <Navbar />
     </header>
   );
+<<<<<<< HEAD
 >>>>>>> a5edc13b430c03700f3326f619581dfa5ec9c1ff
+=======
+
+>>>>>>> b90ccc41bb15180ac8a4efe5aa5b47cffaa17f5f
 };
 
 export default Header;
