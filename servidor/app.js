@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');  // Asegúrate de que el path al archivo de configuración de la DB sea correcto
+const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');
 const rateLimit = require('express-rate-limit');
 
 
@@ -20,10 +20,21 @@ const historialesMedicosRoutes = require('./routes/historialesMedicos');
 const intervencionesRoutes = require('./routes/intervenciones');
 const tratamientosRoutes = require('./routes/tratamientos');
 const usuariosRoutes = require('./routes/usuarios');
-const authRoutes = require('./routes/auth'); // Ajusta la ruta según la ubicación
+const authRoutes = require('./routes/auth');
+const citasRoutes = require('./routes/citas');
 
-const app = express();
 const port = process.env.PORT || 3000;
+const app = express();
+
+//redirigir peticiones que no sean https en producción
+
+app.use((req, res, next) => {
+  if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === "production") {
+      res.redirect(`https://${req.header('host')}${req.url}`);
+  } else {
+      next();
+  }
+});
 
 // Aplicar a todas las solicitudesD
 app.use(apiLimiter);
@@ -40,6 +51,7 @@ app.use('/historialesMedicos', historialesMedicosRoutes);
 app.use('/intervenciones', intervencionesRoutes);
 app.use('/tratamientos', tratamientosRoutes);
 app.use('/usuarios', usuariosRoutes);
+app.use('/citas', citasRoutes);
 
 // Ruta básica para comprobar que el servidor está funcionando
 app.get('/', (req, res) => {
@@ -49,7 +61,7 @@ app.get('/', (req, res) => {
 // Manejo de errores no capturados
 app.use((err, req, res, next) => {
     console.error(err.stack); // Loguea el error
-    res.status(500).send('¡Algo salió mal!');
+    res.status(500).send('algo salió mal!', err);
 });
 
 // Inicialización y sincronización de la base de datos

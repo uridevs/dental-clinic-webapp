@@ -12,4 +12,7 @@ const Layout = ({ children }) => {
     );
 };
 
+<<<<<<< HEAD
 export default Layout;
+=======
+>>>>>>> a5edc13b430c03700f3326f619581dfa5ec9c1ff

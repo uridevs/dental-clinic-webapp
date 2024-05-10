@@ -28,6 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         timestamps: false,
-        tableName: 'tipotratamiento'
+        tableName: 'Tratamiento'
     });
 }

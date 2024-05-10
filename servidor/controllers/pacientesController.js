@@ -30,37 +30,39 @@ exports.listarPaciente = async (req, res) => {
 exports.crearPaciente = async (req, res) => {
   const t = await sequelize.transaction();
   try {
-      const { nombre, apellidos, dni, telefono, email, fecha_alta, password } = req.body;
-
-      // Crear usuario
-      const usuario = await Usuario.create({
-          email,
-          password: await bcrypt.hash(password, 10),
-          role: 'paciente'
-      }, { transaction: t });
-
-      // Crear paciente
-      const paciente = await Paciente.create({
+      const {
           nombre,
           apellidos,
           dni,
           telefono,
           email,
           fecha_alta,
-          usuarioId: usuario.id
+          password
+      } = req.body;
+
+      // Crea el usuario asociado
+      const salt = await bcrypt.genSalt(10);
+      const passwordHash = await bcrypt.hash(password, salt);
+
+      const nuevoUsuario = await Usuario.create({
+          email,
+          password: passwordHash,
+          role: 'paciente'
       }, { transaction: t });
 
-      // Crear historial médico asociado al nuevo paciente
-      await HistorialMedico.create(
-        {
-          id_historial: paciente.id_paciente,
-          observaciones: "",
-        },
-        { transaction: t }
-      );
+      // Crea el paciente vinculado al usuario creado
+      const nuevoPaciente = await Paciente.create({
+          nombre,
+          apellidos,
+          dni,
+          telefono,
+          email,
+          fecha_alta,
+          usuarioId: nuevoUsuario.id
+      }, { transaction: t });
 
       await t.commit();
-      res.status(201).json({ message: "Paciente creado con éxito", paciente});
+      res.status(201).json({ message: "Paciente creado con éxito", nuevoPaciente });
   } catch (error) {
       await t.rollback();
       res.status(500).send(error.message);
@@ -72,31 +74,33 @@ exports.actualizarPaciente = async (req, res) => {
   const t = await sequelize.transaction();
   try {
       const { id } = req.params;
-      const { nombre, apellidos, dni, telefono, email, password } = req.body;
+      const { nombre, apellidos, dni, telefono, email, fecha_alta, password } = req.body;
 
-      // Actualizar usuario relacionado
+      // Encontrar paciente
       const paciente = await Paciente.findByPk(id);
       if (!paciente) throw new Error("Paciente no encontrado");
 
+      // Actualizar usuario relacionado
       const usuario = await Usuario.findByPk(paciente.usuarioId, { transaction: t });
-      if (!usuario) throw new Error("Usuario asociado al paciente no encontrado");
+      if (!usuario) throw new Error("Usuario del paciente no encontrado");
 
-      const passwordHash = await bcrypt.hash(password, 10);
+      const passwordHash = password ? await bcrypt.hash(password, 10) : usuario.password;
       await Usuario.update({
-          email: email,
+          email,
           password: passwordHash,
       }, {
           where: { id: paciente.usuarioId },
           transaction: t
       });
 
-      // Actualizar paciente
+      // Actualizar datos del paciente
       await Paciente.update({
           nombre,
           apellidos,
           dni,
           telefono,
-          email, 
+          email,
+          fecha_alta
       }, {
           where: { id_paciente: id },
           transaction: t

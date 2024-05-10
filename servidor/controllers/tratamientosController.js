@@ -56,7 +56,7 @@ exports.eliminarTratamiento = async (req, res) => {
             where: { id_tipo_tratamiento: id }
         });
         if (deleted) {
-            res.status(204).send("Tratamiento eliminado.");
+            res.status(204).send({message: "tratamiento creado con éxito",updatedTratamiento});
         } else {
             throw new Error('Tratamiento no encontrado');
         }
