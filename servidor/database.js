@@ -51,6 +51,13 @@ Usuario.hasOne(Paciente, { foreignKey: "usuarioId", as: "paciente" });
 Empleado.belongsTo(Usuario, { foreignKey: "usuarioId", as: "usuario" });
 Usuario.hasOne(Empleado, { foreignKey: "usuarioId", as: "empleado" });
 
+
+Cita.belongsTo(Empleado, { foreignKey: 'id_empleado', as: 'doctor' });
+Cita.belongsTo(Paciente, { foreignKey: 'id_paciente', as: 'paciente' });
+Cita.belongsTo(Intervencion, { foreignKey: 'id_intervencion', as: 'intervencion' });
+Cita.belongsTo(Tratamiento, { foreignKey: 'id_tipo_tratamiento', as: 'tratamiento' });
+
+
 module.exports = {
   sequelize,
   Cita,

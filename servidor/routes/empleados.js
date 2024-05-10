@@ -6,8 +6,8 @@ const empleadosValidations = require('../validations/empleadosValidations');
 
 router.get('/', empleadosController.listarEmpleados);
 router.get('/:id', empleadosController.listarEmpleado);
-router.post('/', empleadosValidations.validarCrearEmpleado, empleadosController.crearEmpleado);
-router.put('/:id', empleadosController.actualizarEmpleado);
+router.post('/', empleadosValidations.validacionesEmpleado, empleadosController.crearEmpleado);
+router.put('/:id', empleadosValidations.validacionesEmpleado, empleadosController.actualizarEmpleado);
 router.delete('/:id', empleadosController.eliminarEmpleado);
 
 module.exports = router;

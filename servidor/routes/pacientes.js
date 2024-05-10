@@ -6,8 +6,8 @@ const pacientesValidations = require('../validations/pacientesValidations');
 
 router.get('/', pacientesController.listarPacientes);
 router.get('/:id', pacientesController.listarPaciente);
-router.post('/',pacientesValidations.validarCrearPaciente, pacientesController.crearPaciente);
-router.put('/:id', pacientesController.actualizarPaciente);
+router.post('/', pacientesValidations.validarCrearPaciente, pacientesController.crearPaciente);
+router.put('/:id', pacientesValidations.validarActualizarPaciente, pacientesController.actualizarPaciente);
 router.delete('/:id', pacientesController.eliminarPaciente);
 
 module.exports = router;
