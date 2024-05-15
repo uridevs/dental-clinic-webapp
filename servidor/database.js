@@ -24,7 +24,7 @@ const Tratamiento = require("./models/Tratamiento")(sequelize, DataTypes);
 const Intervencion = require("./models/Intervencion")(sequelize, DataTypes);
 const Categoria = require("./models/Categoria")(sequelize, DataTypes);
 const Especialidad = require("./models/Especialidad")(sequelize, DataTypes);
-const Cita = require('./models/Cita')(sequelize, DataTypes);  // Asumiendo que has creado un archivo de modelo similar a los otros.
+const Cita = require('./models/Cita')(sequelize, DataTypes);  
 
 //Relaciones entre modelos
 // Establece la relación uno a uno entre Paciente e HistorialMedico

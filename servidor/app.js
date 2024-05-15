@@ -25,22 +25,8 @@ const citasRoutes = require('./routes/citas');
 
 const port = process.env.PORT || 3000;
 const app = express();
-<<<<<<< HEAD
-=======
 
 //redirigir peticiones que no sean https en producción
-
-app.use((req, res, next) => {
-  if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === "production") {
-      res.redirect(`https://${req.header('host')}${req.url}`);
-  } else {
-      next();
-  }
-});
->>>>>>> b90ccc41bb15180ac8a4efe5aa5b47cffaa17f5f
-
-//redirigir peticiones que no sean https en producción
-
 app.use((req, res, next) => {
   if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === "production") {
       res.redirect(`https://${req.header('host')}${req.url}`);
