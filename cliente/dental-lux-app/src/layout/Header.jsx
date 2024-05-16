@@ -1,4 +1,5 @@
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
     return (
@@ -17,18 +18,18 @@ const Header = () => {
                                     <svg className="location primary-color" width="24" height="24">
                                         <use xlinkHref="#location" />
                                     </svg>
-                                    Calle Recogidas Nº72, Granada
+                                    C/ Recogidas Nº 272, Granada
                                 </li>
                                 <li className="ps-xl-3">
                                     <svg className="phone primary-color" width="24" height="24">
                                         <use xlinkHref="#phone" />
                                     </svg>
-                                    (958) 389452
+                                    (958) 3894521
                                 </li>
                             </ul>
                         </div>
-                        <div className="col-lg-4 col-md-4 col-sm-6">
-                            <button className="btn btn-primary">Login</button>
+                        <div className="d-flex justify-content-center col-lg-4 col-md-4 col-sm-6">
+                            <button className="btn btn-lg btn-primary"><Link to="/login">Login</Link></button>
                         </div>
                     </div>
                 </div>

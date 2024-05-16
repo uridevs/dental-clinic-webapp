@@ -65,7 +65,7 @@ exports.buscarHistorialPorDNI = async (req, res) => {
                 as: 'historialMedico',
                 include: [{
                     model: Intervencion,
-                    as: 'intervenciones' // Asegúrate de que esta asociación está correctamente definida en tus modelos
+                    as: 'intervenciones' 
                 }],
                 attributes: ['id_historial', 'observaciones']
             }],

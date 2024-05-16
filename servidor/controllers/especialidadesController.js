@@ -41,7 +41,7 @@ exports.modificarEspecialidad = async (req, res) => {
 
 exports.eliminarEspecialidad = async (req, res) => {
     try {
-        const { id } = req.params;  // Asumiendo que el ID viene de la URL
+        const { id } = req.params;  
         const deleted = await Especialidad.destroy({
             where: { id_especialidad: id }
         });

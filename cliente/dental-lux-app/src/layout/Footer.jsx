@@ -20,7 +20,7 @@ const Footer = () => {
                   <svg className="location primary-color" width="25" height="25">
                     <use xlinkHref="#location"></use>
                   </svg>
-                  <span>Recogidas 72, Granada, España</span>
+                  <span>C/ Recogidas nº 272, Granada, España</span>
                 </p>
                 <p>
                   <svg className="email primary-color" width="25" height="25">
@@ -32,7 +32,7 @@ const Footer = () => {
                   <svg className="phone primary-color" width="25" height="25">
                     <use xlinkHref="#phone"></use>
                   </svg>
-                  <span>958 - 389452</span>
+                  <span>958 - 3894521</span>
                 </p>
                 <ul className="social-links list-unstyled d-flex mt-3">
                   <li>

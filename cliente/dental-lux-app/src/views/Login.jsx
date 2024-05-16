@@ -1,17 +1,18 @@
 import Layout from "../layout/Layout";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic here (e.g., send data to server)
+    // Handle form submission logic 
   };
 
   return (
     <Layout>
-    <div className="container mt-5"> {/* Added container and margin for better layout */}
+    <div className="container mt-5"> 
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <fieldset className="card p-4">  {/* Semantic element for form group */}
+          <fieldset className="card p-4">  
             <legend className="card-title text-center">Login</legend>
             <form onSubmit={handleSubmit}>
               <div className="form-group mb-3">
@@ -29,7 +30,7 @@ const Login = () => {
               <button type="submit" className="btn btn-primary">Entrar</button>
             </form>
             <div className="text-end mt-3">
-              <a href="signup.html" className="link-primary">Registrate aquí</a>
+            <p>¿No tienes cuenta aún? Registrate <small><Link to="/Registro">aquí</Link></small></p> 
             </div>
           </fieldset>
         </div>
