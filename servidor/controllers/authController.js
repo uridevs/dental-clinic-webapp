@@ -18,12 +18,13 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, 'your_secret_key', { expiresIn: '1h' });
-        res.json({ message: 'Autenticación exitosa', token });
+        res.json({ message: 'Autenticación exitosa', token, user: { id: usuario.id, role: usuario.role } });
     } catch (error) {
         console.error(`Error durante el proceso de autenticación para ${email}: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
+
 
 
 // TODO testear este código para generar seguridad adicional

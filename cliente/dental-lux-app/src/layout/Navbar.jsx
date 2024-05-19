@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-
   const handleClick = (e) => {
     e.preventDefault();
-    const target = e.target.getAttribute('href').substring(1);
+    const target = e.target.getAttribute("href").substring(1);
     const location = document.getElementById(target);
-    location && location.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
+    location && location.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <nav
@@ -39,23 +38,29 @@ const Navbar = () => {
           id="navbar-primary"
         >
           <ul className="navbar-nav justify-content-between me-auto mb-2 mb-lg-0">
-            <Link to="#" onClick={handleClick} href="#about-us">Sobre nosotros</Link>
+            {/* <li className="nav-item ps-4 pe-4 border-right">
+              <Link to="#" onClick={handleClick} href="#about-us">Sobre nosotros</Link>
+            </li> */}
+            <li className="nav-item ps-4 pe-4 border-right">
+              <Link className="nav-link text-dark p-0 mt-3 mt-lg-0" to="/">
+                Inicio
+              </Link>
+            </li>
             <li className="nav-item ps-4 pe-4 border-right">
               <a
-                className="nav-link text-dark active p-0 mt-3 mt-lg-0"
-                aria-current="page"
-                href="#intro"
+                className="nav-link text-dark p-0"
+                href="#about-us"
+                onClick={handleClick}
               >
-                Inicio
+                Nuestro grupo
               </a>
             </li>
             <li className="nav-item ps-4 pe-4 border-right">
-              <a className="nav-link text-dark p-0" href="#about-us">
-                Grupo Dental Luxe
-              </a>
-            </li>
-            <li className="nav-item ps-4 pe-4 border-right">
-              <a className="nav-link text-dark p-0" href="#our-services">
+              <a
+                className="nav-link text-dark p-0"
+                href="#our-services"
+                onClick={handleClick}
+              >
                 Especialidades
               </a>
             </li>
@@ -76,14 +81,14 @@ const Navbar = () => {
               </a>
             </li>
             <li className="nav-item ps-4 pe-4 border-right">
-              <a className="nav-link text-dark p-0" href="#book-appointment">
-                Citas
-              </a>
+              <Link className="nav-link text-dark p-0" to="/contacto">
+                Contacto
+              </Link>
             </li>
 
             <li className="nav-item ps-4 pe-4">
               <a href="#latest-blog" className="nav-link text-dark fw-bold p-0">
-                Blog Dental
+                Blog
               </a>
             </li>
           </ul>

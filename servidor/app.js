@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');
 const rateLimit = require('express-rate-limit');
@@ -25,6 +26,7 @@ const citasRoutes = require('./routes/citas');
 
 const port = process.env.PORT || 3000;
 const app = express();
+app.use(cors());
 
 //redirigir peticiones que no sean https en producción
 app.use((req, res, next) => {

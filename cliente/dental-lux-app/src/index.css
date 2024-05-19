@@ -794,10 +794,8 @@ section#intro {
 /* 4.3 Our Best Services Section
 /*----------------------------------------------*/
 #our-services {
-  background-image: url(images/services-bg.jpg);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-position: top;
+  overflow: hidden;
+  width: 100%;
 }
 
 .display-header {
