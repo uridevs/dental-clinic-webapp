@@ -1,50 +1,63 @@
-// src/contexts/AuthContext.js
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { login as apiLogin } from "../api/api";
-import {jwtDecode} from 'jwt-decode';
-
+import { jwtDecode } from "jwt-decode"; // Importación correcta sin llaves
+import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const userData = localStorage.getItem("user");
+
+    if (token && userData) {
       const decodedToken = jwtDecode(token);
-      setUser(decodedToken);
       if (decodedToken.exp * 1000 < Date.now()) {
-        // Token expirado, manejar la renovación del token si es necesario
         logout();
       } else {
-        setUser(decodedToken);
+        setUser(JSON.parse(userData));
       }
     }
-    setLoading(false);
-  }, []);
+  }, [logout]);
 
   const login = async (credentials) => {
     try {
       const { data } = await apiLogin(credentials);
       const decodedToken = jwtDecode(data.token);
-      localStorage.setItem('token', data.token);
-      setUser(decodedToken);
-      return data;
+      const user = {
+        ...decodedToken,
+        idEspecifico: data.user.idEspecifico,
+        role: decodedToken.role,
+      };
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+      // Maneja la redirección aquí
+      if (decodedToken.role === "1") {
+        navigate("/Administrador");
+      } else if (decodedToken.role === 'paciente') {
+        navigate(`/paciente/${user.idEspecifico}`);
+      } else {
+        navigate(`/empleado/${user.idEspecifico}`);
+      }
     } catch (error) {
-      console.error('Error during login', error);
-      throw error
+      console.error("Error during login", error);
+      throw error;
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

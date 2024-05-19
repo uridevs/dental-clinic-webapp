@@ -1,4 +1,4 @@
-const { sequelize, Cita, Intervencion} = require("../database.js");
+const { sequelize, Cita, Paciente, Empleado, Tratamiento, Intervencion } = require("../database.js");
 const { Op } = require('sequelize');
 
 exports.crearCita = async (req, res) => {
@@ -34,7 +34,7 @@ exports.crearCita = async (req, res) => {
                 inicio,
                 fin,
                 id_empleado,
-                id_intervencion: nuevaIntervencion.id_intervencion, // Usando el ID de la intervención recién creada
+                id_intervencion: nuevaIntervencion.id_intervencion,
                 estado: "Pendiente",
                 id_tipo_tratamiento
             }, { transaction: t });
@@ -50,7 +50,13 @@ exports.crearCita = async (req, res) => {
 
 exports.listarCitas = async (req, res) => {
     try {
-        const citas = await Cita.findAll();
+        const citas = await Cita.findAll({
+            include: [
+                { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
+            ]
+        });
         res.json(citas);
     } catch (error) {
         res.status(500).send(error.message);
@@ -60,7 +66,12 @@ exports.listarCitas = async (req, res) => {
 exports.listarPorPaciente = async (req, res) => {
     try {
         const citas = await Cita.findAll({
-            where: { id_paciente: req.params.id }
+            where: { id_paciente: req.params.id },
+            include: [
+                { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
+            ]
         });
         res.json(citas);
     } catch (error) {
@@ -71,7 +82,12 @@ exports.listarPorPaciente = async (req, res) => {
 exports.listarPorDoctor = async (req, res) => {
     try {
         const citas = await Cita.findAll({
-            where: { id_empleado: req.params.id }
+            where: { id_empleado: req.params.id },
+            include: [
+                { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
+            ]
         });
         res.json(citas);
     } catch (error) {

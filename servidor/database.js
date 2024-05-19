@@ -24,7 +24,7 @@ const Tratamiento = require("./models/Tratamiento")(sequelize, DataTypes);
 const Intervencion = require("./models/Intervencion")(sequelize, DataTypes);
 const Categoria = require("./models/Categoria")(sequelize, DataTypes);
 const Especialidad = require("./models/Especialidad")(sequelize, DataTypes);
-const Cita = require('./models/Cita')(sequelize, DataTypes);  
+const Cita = require('./models/Cita')(sequelize, DataTypes);
 
 //Relaciones entre modelos
 // Establece la relación uno a uno entre Paciente e HistorialMedico
@@ -51,12 +51,10 @@ Usuario.hasOne(Paciente, { foreignKey: "usuarioId", as: "paciente" });
 Empleado.belongsTo(Usuario, { foreignKey: "usuarioId", as: "usuario" });
 Usuario.hasOne(Empleado, { foreignKey: "usuarioId", as: "empleado" });
 
-
 Cita.belongsTo(Empleado, { foreignKey: 'id_empleado', as: 'doctor' });
 Cita.belongsTo(Paciente, { foreignKey: 'id_paciente', as: 'paciente' });
 Cita.belongsTo(Intervencion, { foreignKey: 'id_intervencion', as: 'intervencion' });
 Cita.belongsTo(Tratamiento, { foreignKey: 'id_tipo_tratamiento', as: 'tratamiento' });
-
 
 module.exports = {
   sequelize,

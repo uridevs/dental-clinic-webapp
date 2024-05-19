@@ -85,6 +85,11 @@ const Navbar = () => {
                 Contacto
               </Link>
             </li>
+            <li className="nav-item ps-4 pe-4 border-right">
+              <Link className="nav-link text-dark p-0" to="/registro">
+                Registro
+              </Link>
+            </li>
 
             <li className="nav-item ps-4 pe-4">
               <a href="#latest-blog" className="nav-link text-dark fw-bold p-0">

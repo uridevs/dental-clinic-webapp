@@ -5,7 +5,7 @@ const { Cita, Empleado, Paciente, Intervencion } = require('../database');
 exports.validarCrearCita = [
     body('id_paciente').isInt().withMessage('El ID del paciente debe ser un número entero válido'),
     body('id_empleado').isInt().withMessage('El ID del empleado debe ser un número entero válido'),
-    body('id_intervencion').isInt().withMessage('El ID de la intervención debe ser un número entero válido'),
+    body('id_tipo_tratamiento').isInt().withMessage('El ID del tratamiento debe ser un número entero válido'),
     body('inicio').isISO8601().withMessage('La fecha de inicio debe ser una fecha válida').custom((value, { req }) => {
         if (new Date(value) < new Date()) {
             throw new Error('La fecha de inicio debe ser futura');

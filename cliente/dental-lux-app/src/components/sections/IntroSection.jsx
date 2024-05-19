@@ -38,7 +38,7 @@ const IntroSection = () => {
           </p>
         </div>
 
-        <div className="position-absolute d-flex justify-content-end gap-2 mt-2 w-100">
+        {/* <div className="position-absolute d-flex justify-content-end gap-2 mt-2 w-100">
           <a
             href="#book-appointment"
             className="btn btn-medium btn-primary btn-pill text-uppercase text-center"
@@ -51,7 +51,7 @@ const IntroSection = () => {
           >
             Contáctanos
           </a>
-        </div>
+        </div> */}
       </div>
     </section>
   );
