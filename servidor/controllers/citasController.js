@@ -1,10 +1,10 @@
+// citasController.js
 const { sequelize, Cita, Paciente, Empleado, Tratamiento, Intervencion } = require("../database.js");
 const { Op } = require('sequelize');
 
 exports.crearCita = async (req, res) => {
     const { id_paciente, inicio, fin, id_empleado, id_tipo_tratamiento } = req.body;
 
-    // Verificar solapamientos
     const solapamiento = await Cita.findOne({
         where: {
             id_empleado,
@@ -18,17 +18,15 @@ exports.crearCita = async (req, res) => {
     }
 
     try {
-        // Transacción para asegurar la creación de intervención y cita
         const resultado = await sequelize.transaction(async (t) => {
             const nuevaIntervencion = await Intervencion.create({
-                id_historial: id_paciente, 
+                id_historial: id_paciente,
                 fecha_hora: inicio,
                 id_tipo_tratamiento,
                 id_empleado,
                 notas: "Pendiente de realizar"
             }, { transaction: t });
 
-            console.log(nuevaIntervencion);
             const nuevaCita = await Cita.create({
                 id_paciente,
                 inicio,
@@ -50,13 +48,25 @@ exports.crearCita = async (req, res) => {
 
 exports.listarCitas = async (req, res) => {
     try {
-        const citas = await Cita.findAll({
-            include: [
-                { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
-                { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
-                { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
-            ]
-        });
+        let citas;
+        if (req.user.role === 'paciente') {
+            citas = await Cita.findAll({
+                where: { id_paciente: req.user.idEspecifico },
+                include: [
+                    { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                    { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                    { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
+                ]
+            });
+        } else {
+            citas = await Cita.findAll({
+                include: [
+                    { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                    { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                    { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' }
+                ]
+            });
+        }
         res.json(citas);
     } catch (error) {
         res.status(500).send(error.message);
@@ -123,4 +133,3 @@ exports.eliminarCita = async (req, res) => {
         res.status(500).send(error.message);
     }
 };
-

@@ -1,3 +1,4 @@
+// authController.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Usuario, Paciente, Empleado } = require("../database.js");
@@ -21,12 +22,12 @@ exports.login = async (req, res) => {
 
         let idEspecifico;
         if (usuario.role === 'paciente') {
-            const paciente = await Paciente.findOne({ where: { email } });
+            const paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
             if (paciente) {
                 idEspecifico = paciente.id_paciente;
             }
         } else {
-            const empleado = await Empleado.findOne({ where: { email } });
+            const empleado = await Empleado.findOne({ where: { usuarioId: usuario.id } });
             if (empleado) {
                 idEspecifico = empleado.id_empleado;
             }

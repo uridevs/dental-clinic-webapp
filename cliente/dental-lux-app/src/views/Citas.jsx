@@ -14,15 +14,29 @@ const Citas = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedCita, setSelectedCita] = useState(null);
+  const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
   useEffect(() => {
     const fetchCitas = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       try {
-        const { data } = await api.get('/citas');
+        const { data } = await api.get('/citas', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         const now = new Date();
-        const futuras = data.filter(cita => new Date(cita.inicio) > now);
-        const pasadas = data.filter(cita => new Date(cita.inicio) <= now);
+
+        let citasFiltradas = data;
+        if (user.role === 'paciente') {
+          citasFiltradas = data.filter(cita => cita.id_paciente === user.idEspecifico);
+        }
+
+        const futuras = citasFiltradas.filter(cita => new Date(cita.inicio) > now);
+        const pasadas = citasFiltradas.filter(cita => new Date(cita.inicio) <= now);
         setCitas({ futuras, pasadas });
         setLoading(false);
       } catch (error) {
@@ -31,17 +45,23 @@ const Citas = () => {
       }
     };
     fetchCitas();
-  }, []);
+  }, [user]);
 
   const handleEliminar = async (id) => {
     try {
-      await api.delete(`/citas/${id}`);
+      await api.delete(`/citas/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       setCitas({
         futuras: citas.futuras.filter(cita => cita.id !== id),
         pasadas: citas.pasadas.filter(cita => cita.id !== id)
       });
+      setAlert({ show: true, message: 'Cita eliminada correctamente.', type: 'success' });
     } catch (error) {
       setError('Error al eliminar la cita');
+      setAlert({ show: true, message: 'Error al eliminar la cita.', type: 'danger' });
     }
   };
 
@@ -61,9 +81,15 @@ const Citas = () => {
 
   const handleGuardarEstado = async (cita) => {
     try {
-      await api.put(`/citas/${cita.id}`, { estado: cita.estado });
+      await api.put(`/citas/${cita.id}`, { estado: cita.estado }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setAlert({ show: true, message: 'Estado de la cita actualizado correctamente.', type: 'success' });
     } catch (error) {
       setError('Error al guardar el estado de la cita');
+      setAlert({ show: true, message: 'Error al guardar el estado de la cita.', type: 'danger' });
     }
   };
 
@@ -91,66 +117,78 @@ const Citas = () => {
         <div className="text-center">
           <h1 className="mb-4">Citas</h1>
           <button className="btn btn-secondary mb-4" onClick={handleVolver}>Volver</button>
+          {alert.show && (
+            <div className={`alert alert-${alert.type}`} role="alert">
+              {alert.message}
+            </div>
+          )}
         </div>
 
         {['futuras', 'pasadas'].map(key => (
           <div key={key}>
             <h2 className="text-center">Citas {key.charAt(0).toUpperCase() + key.slice(1)}</h2>
-            <table className="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Paciente</th>
-                  <th>Doctor</th>
-                  <th>Tratamiento</th>
-                  <th>Inicio</th>
-                  <th>Fin</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {citas[key].map(cita => (
-                  <tr key={cita.id}>
-                    <td>{cita.paciente ? `${cita.paciente.nombre} ${cita.paciente.apellidos}` : 'N/A'}</td>
-                    <td>{cita.doctor ? `${cita.doctor.nombre} ${cita.doctor.apellidos}` : 'N/A'}</td>
-                    <td>{cita.tratamiento ? cita.tratamiento.nombre_tratamiento : 'N/A'}</td>
-                    <td>{format(new Date(cita.inicio), 'dd/MM/yyyy HH:mm')}</td>
-                    <td>{format(new Date(cita.fin), 'dd/MM/yyyy HH:mm')}</td>
-                    <td>
-                      {user.role !== 'paciente' && (
-                        <>
-                          <select
-                            className="form-select form-select-sm"
-                            value={cita.estado}
-                            onChange={(e) => handleEstadoChange(cita, e.target.value)}
-                          >
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Cancelada">Cancelada</option>
-                            <option value="En Espera">En Espera</option>
-                            <option value="En Progreso">En Progreso</option>
-                            <option value="Completada">Completada</option>
-                          </select>
-                          <button
-                            className="btn btn-success btn-sm ms-2"
-                            onClick={() => handleGuardarEstado(cita)}
-                          >
-                            <i className="fas fa-save"></i>
-                          </button>
-                        </>
-                      )}
-                    </td>
-                    <td>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(cita.id)}>
-                        Eliminar
-                      </button>
-                    </td>
+            {citas[key].length === 0 ? (
+              <div className="alert alert-info text-center" role="alert">
+                No hay citas disponibles
+              </div>
+            ) : (
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Paciente</th>
+                    <th>Doctor</th>
+                    <th>Tratamiento</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {citas[key].map(cita => (
+                    <tr key={cita.id}>
+                      <td>{cita.paciente ? `${cita.paciente.nombre} ${cita.paciente.apellidos}` : 'N/A'}</td>
+                      <td>{cita.doctor ? `${cita.doctor.nombre} ${cita.doctor.apellidos}` : 'N/A'}</td>
+                      <td>{cita.tratamiento ? cita.tratamiento.nombre_tratamiento : 'N/A'}</td>
+                      <td>{format(new Date(cita.inicio), 'dd/MM/yyyy HH:mm')}</td>
+                      <td>{format(new Date(cita.fin), 'dd/MM/yyyy HH:mm')}</td>
+                      <td>
+                        {user.role !== 'paciente' && (
+                          <>
+                            <select
+                              className="form-select form-select-sm"
+                              value={cita.estado}
+                              onChange={(e) => handleEstadoChange(cita, e.target.value)}
+                            >
+                              <option value="Pendiente">Pendiente</option>
+                              <option value="Cancelada">Cancelada</option>
+                              <option value="En Espera">En Espera</option>
+                              <option value="En Progreso">En Progreso</option>
+                              <option value="Completada">Completada</option>
+                            </select>
+                            <button
+                              className="btn btn-success btn-sm ms-2"
+                              onClick={() => handleGuardarEstado(cita)}
+                            >
+                              <i className="fas fa-save"></i>
+                            </button>
+                          </>
+                        )}
+                      </td>
+                      {user.role === '1' && (
+                        <td>
+                          <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(cita.id)}>
+                            Eliminar
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         ))}
-
       </div>
     </Layout>
   );

@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         fecha_antiguedad: {
             type: DataTypes.DATE
+        },
+        usuarioId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     
     }, {
