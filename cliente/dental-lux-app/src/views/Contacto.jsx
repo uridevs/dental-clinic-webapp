@@ -1,6 +1,21 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Layout from "../layout/Layout";
 
 function Contacto() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();  // Prevenir la recarga de la página por el comportamiento por defecto del formulario
+    setIsSubmitted(true);  // Mostrar el mensaje de éxito
+    
+    setTimeout(() => {
+      setIsSubmitted(false);  // Ocultar el mensaje después de 4 segundos
+      navigate('/');  // Redirigir al usuario a la página principal
+    }, 4000);  // 4000 milisegundos = 4 segundos
+  };
+
   return (
     <Layout>
       <section className="ftco-section mt-10 border p-1">
@@ -20,18 +35,21 @@ function Contacto() {
                         Nos pondremos en contacto contigo lo antes posible
                       </h3>
                       <div id="form-message-warning" className="mb-4"></div>
-                      <div
-                        id="form-message-success"
-                        className="mb-4 text-success"
-                      >
-                        Tu mensaje se ha enviado con exito, ¡Gracias!
-                      </div>
+                      {isSubmitted && (
+                        <div
+                          id="form-message-success"
+                          className="mb-4 text-success"
+                        >
+                          Tu mensaje se ha enviado con éxito, ¡Gracias!
+                        </div>
+                      )}
                       <form
                         method="POST"
                         id="contactForm"
                         name="contactForm"
                         className="contactForm"
                         noValidate="novalidate"
+                        onSubmit={handleSubmit}
                       >
                         <div className="row">
                           <div className="col-md-6">

@@ -131,8 +131,12 @@ const handleSubmit = async (event) => {
     await api.post('/citas', nuevaCita);
     setAlert({ show: true, message: 'Cita creada con éxito. Redirigiendo...', type: 'success' });
     setTimeout(() => {
-      navigate('/citas');
-    }, 3500); // 3.5 segundos de retraso
+      if (user.role === 'paciente') {
+        navigate(`/paciente/${user.idEspecifico}`);
+      } else {
+        navigate('/citas');
+      }
+    }, 4500); // 4.5 segundos de retraso
   } catch (error) {
     setAlert({ show: true, message: error.response?.data || 'Error al crear la cita', type: 'danger' });
   }

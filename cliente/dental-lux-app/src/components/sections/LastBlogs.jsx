@@ -1,7 +1,7 @@
 
 const LastBlogs = () => {
   return (
-    <section id="latest-blog" className="padding-large">
+    <section id="latest-blog" className="padding-large mt-5">
       <div className="container">
         <div className="row">
           <div className="display-header">

@@ -49,7 +49,7 @@ const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
                 href="#about-us"
                 onClick={handleClick}
               >
-                Nuestro grupo
+                DentalLuxe
               </a>
             </li>
             <li className="nav-item ps-4 pe-4 border-right">
@@ -58,7 +58,7 @@ const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
                 href="#our-services"
                 onClick={handleClick}
               >
-                Especialidades
+                Servicios
               </a>
             </li>
 
@@ -74,7 +74,7 @@ const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
             </li>
             <li className="nav-item ps-4 pe-4 border-right">
               <a className="nav-link text-dark p-0" href="#faqs">
-                FAQ
+                Preguntas Frecuentes
               </a>
             </li>
             <li className="nav-item ps-4 pe-4 border-right">

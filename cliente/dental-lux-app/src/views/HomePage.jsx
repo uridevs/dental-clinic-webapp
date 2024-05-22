@@ -4,6 +4,8 @@ import IntroSection from '../components/sections/IntroSection';
 import LastBlogs from '../components/sections/LastBlogs';
 import OurServicesSection from '../components/sections/OurServicesSection';
 import OurTeamSection from '../components/sections/OurTeamSection';
+
+
 import Testimonial from '../components/sections/Testimonial';
 import Layout from '../layout/Layout';
 
@@ -14,8 +16,8 @@ const HomePage = () => {
             <AboutUsSection />
             <OurServicesSection />
             <OurTeamSection />
-            <Testimonial />
             <Faqs />
+            <Testimonial />
             <LastBlogs />
         </Layout>
     );

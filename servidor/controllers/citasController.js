@@ -113,7 +113,7 @@ exports.modificarCita = async (req, res) => {
             const updatedCita = await Cita.findByPk(id);
             res.status(200).json(updatedCita);
         } else {
-            throw new Error('Cita no encontrada');
+            throw new Error($`Cita no encontrada: {error}`);
         }
     } catch (error) {
         res.status(500).send(error.message);
