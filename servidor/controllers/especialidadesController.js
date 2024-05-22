@@ -9,6 +9,7 @@ exports.listarEspecialidades = async (req, res) => {
     }
 };
 
+
 exports.crearEspecialidad = async (req, res) => {
     try {
         const nuevaEspecialidad = await Especialidad.create(req.body);

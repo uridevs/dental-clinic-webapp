@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import api from '../api/api';
 import Layout from "../layout/Layout";
 
@@ -113,9 +113,7 @@ const EmpleadoDashboard = () => {
             <div className="card bg-success text-white mb-4">
               <div className="card-body"><i className="fas fa-calendar-check"></i> Gestionar Citas</div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <a className="small text-white stretched-link" href="#">
-                 Ir
-                </a>
+                <Link className="small text-white stretched-link" to="/citas">Ir</Link>
                 <div className="small text-white">
                   {" "}
                   <i className="fas fa-angle-right"></i>

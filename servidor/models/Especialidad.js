@@ -1,5 +1,4 @@
 // /models/Especialidad.js
-
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('Especialidad', {
         id_especialidad: {

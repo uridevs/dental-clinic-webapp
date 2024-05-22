@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Layout from "../layout/Layout";
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import validator from 'validator';
 
 const Registro = () => {
   const { login } = useContext(AuthContext);
@@ -19,24 +20,31 @@ const Registro = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    // Validaciones simples en el frontend
+  const validateFields = () => {
     const errors = {};
     if (!nombre) errors.nombre = 'El nombre es requerido';
     if (!apellidos) errors.apellidos = 'Los apellidos son requeridos';
     if (!dni) errors.dni = 'El DNI es requerido';
+    else if (dni.length !== 9) errors.dni = 'DNI debe tener 9 caracteres';
     if (!telefono) errors.telefono = 'El teléfono es requerido';
     if (!email) errors.email = 'El correo electrónico es requerido';
+    else if (!validator.isEmail(email)) errors.email = 'Correo electrónico inválido';
     if (!contrasena) errors.contrasena = 'La contraseña es requerida';
+    else if (!validator.isStrongPassword(contrasena)) errors.contrasena = 'La contraseña no es suficientemente segura';
     if (contrasena !== repetirContrasena) errors.repetirContrasena = 'Las contraseñas no coinciden';
+    return errors;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const errors = validateFields();
     setFieldErrors(errors);
 
     if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.post('/api/pacientes', { nombre, apellidos, dni, telefono, email, password: contrasena });
-        setSuccess('Registro exitoso. Redirigiendo...');
+        setSuccess('Registrado correctamente. Redirigiendo...');
         setError('');
 
         // Loguear al usuario automáticamente
@@ -45,7 +53,7 @@ const Registro = () => {
         // Redirigir al usuario a su página de usuario
         setTimeout(() => {
           navigate(`/paciente/${response.data.nuevoPaciente.id_paciente}`);
-        }, 2000); // 2 segundos de retraso
+        }, 3500); // 3.5 segundos de retraso
       } catch (err) {
         setSuccess('');
         if (err.response && err.response.data.errors) {

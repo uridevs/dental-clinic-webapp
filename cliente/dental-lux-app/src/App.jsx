@@ -17,6 +17,7 @@ import Blog from './views/Blog';
 import Error from './views/Error';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
+import CrearCita from './views/CrearCita';
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                         <Route path="/blog" element={<Blog />} />
                         <Route path="/registro" element={<Registro />} />
                         <Route path="/citas" element={<Citas />} />
+                        <Route path="/crearcita" element={<CrearCita />} />
                         <Route path="/paciente/:id" element={
                             <PrivateRoute>
                                 <PacienteDashboard />

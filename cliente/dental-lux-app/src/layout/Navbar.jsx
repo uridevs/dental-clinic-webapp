@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
   const handleClick = (e) => {
     e.preventDefault();
     const target = e.target.getAttribute("href").substring(1);
@@ -38,9 +38,6 @@ const Navbar = () => {
           id="navbar-primary"
         >
           <ul className="navbar-nav justify-content-between me-auto mb-2 mb-lg-0">
-            {/* <li className="nav-item ps-4 pe-4 border-right">
-              <Link to="#" onClick={handleClick} href="#about-us">Sobre nosotros</Link>
-            </li> */}
             <li className="nav-item ps-4 pe-4 border-right">
               <Link className="nav-link text-dark p-0 mt-3 mt-lg-0" to="/">
                 Inicio
@@ -85,12 +82,13 @@ const Navbar = () => {
                 Contacto
               </Link>
             </li>
-            <li className="nav-item ps-4 pe-4 border-right">
-              <Link className="nav-link text-dark p-0" to="/registro">
-                Registro
-              </Link>
-            </li>
-
+            {!user && ( // Condicional para mostrar el enlace de registro solo si el usuario no está autenticado
+              <li className="nav-item ps-4 pe-4 border-right">
+                <Link className="nav-link text-dark p-0" to="/registro">
+                  Registro
+                </Link>
+              </li>
+            )}
             <li className="nav-item ps-4 pe-4">
               <a href="#latest-blog" className="nav-link text-dark fw-bold p-0">
                 Blog

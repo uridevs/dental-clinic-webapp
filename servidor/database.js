@@ -56,6 +56,17 @@ Cita.belongsTo(Paciente, { foreignKey: 'id_paciente', as: 'paciente' });
 Cita.belongsTo(Intervencion, { foreignKey: 'id_intervencion', as: 'intervencion' });
 Cita.belongsTo(Tratamiento, { foreignKey: 'id_tipo_tratamiento', as: 'tratamiento' });
 
+
+Especialidad.hasMany(Tratamiento, {
+  foreignKey: 'id_especialidad',
+  as: 'tratamientos'
+});
+
+Tratamiento.belongsTo(Especialidad, {
+  foreignKey: 'id_especialidad',
+  as: 'especialidad'
+});
+
 module.exports = {
   sequelize,
   Cita,

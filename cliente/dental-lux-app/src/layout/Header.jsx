@@ -11,11 +11,14 @@ const Header = () => {
   // Determinar si la ruta actual es /login o /registro
   const isLoginOrRegister = location.pathname === '/login' || location.pathname === '/registro';
 
+  const isHomePage = location.pathname === '/'; // Verificar si la ruta actual es la página principal
 
   const handleAccountClick = () => {
     if (user) {
       if (user.role === 'paciente') {
         navigate(`/paciente/${user.idEspecifico}`);
+      } else if(user.role ==='1'){
+        navigate(`/administrador`);
       } else {
         navigate(`/empleado/${user.idEspecifico}`);
       }
@@ -63,7 +66,7 @@ const Header = () => {
               {!isLoginOrRegister && (
                 <>
                   <button className="btn btn-primary" onClick={handleAccountClick}>
-                    {user ? "Mi cuenta" : "Login"}
+                    {user ? "Mi area" : "Login"}
                   </button>
                   {user && <button className="btn btn-link text-danger p-0" onClick={logout} title="Logout">
                 <i className="fas fa-sign-out-alt fa-lg"></i>
@@ -74,7 +77,8 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <Navbar />
+      {isHomePage && <Navbar user={user} />} 
+
     </header>
   );
 };

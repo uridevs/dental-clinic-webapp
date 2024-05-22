@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 // apilimiter config
 const apiLimiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutos
-    max: 50, // Limitar cada IP a 100 solicitudes por ventana de tiempo
+    max: 5000, // Limitar cada IP a 100 solicitudes por ventana de tiempo
     message: 'Excedido el número máximo de solicitudes. Intente de nuevo más tarde.'
 });
 

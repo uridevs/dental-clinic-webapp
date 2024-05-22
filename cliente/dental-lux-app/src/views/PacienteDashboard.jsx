@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../layout/Layout";
 import { format } from 'date-fns';
@@ -10,6 +10,7 @@ const PacienteDashboard = () => {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCitaId, setSelectedCitaId] = useState(null);
 
   useEffect(() => {
     const fetchPaciente = async () => {
@@ -34,6 +35,21 @@ const PacienteDashboard = () => {
     fetchCitas();
     setLoading(false);
   }, [id]);
+
+  const handleCancelClick = (citaId) => {
+    setSelectedCitaId(citaId);
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+  };
+
+  const handleConfirmCancel = async () => {
+    try {
+      await api.put(`/citas/${selectedCitaId}`, { estado: 'Cancelada' });
+      setCitas(citas.map(cita => cita.id === selectedCitaId ? { ...cita, estado: 'Cancelada' } : cita));
+    } catch (error) {
+      console.error('Error al cancelar la cita', error);
+    }
+  };
 
   if (loading) {
     return <div>Cargando...</div>;
@@ -132,11 +148,9 @@ const PacienteDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-danger text-white mb-4">
-              <div className="card-body"><i className="fas fa-calendar-alt me-1"></i>Próximas Citas</div>
+              <div className="card-body"><i className="fas fa-calendar-alt me-1"></i>Mis Citas</div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <a className="small text-white stretched-link" href="#">
-                  Ver
-                </a>
+              <Link className="small text-white stretched-link" to="/CrearCita">Pedir Cita</Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -197,9 +211,15 @@ const PacienteDashboard = () => {
                               <td>{format(new Date(cita.inicio), 'HH:mm')}</td>
                               <td>{cita.doctor ? `${cita.doctor.nombre} ${cita.doctor.apellidos}` : 'null'}</td>
                               <td>
-                                <button className="btn btn-danger btn-sm" title="Cancelar Cita">
-                                  <i className="fas fa-times"></i>
-                                </button>
+                                {cita.estado === 'Cancelada' ? (
+                                  <button className="btn btn-danger btn-sm" disabled>
+                                    Cancelada
+                                  </button>
+                                ) : (
+                                  <button className="btn btn-danger btn-sm" title="Cancelar Cita" onClick={() => handleCancelClick(cita.id)}>
+                                    <i className="fas fa-times"></i>
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -220,6 +240,25 @@ const PacienteDashboard = () => {
               </div>
             </div>
           </footer>
+        </div>
+      </div>
+
+      {/* Modal de Confirmación */}
+      <div className="modal fade" id="deleteModal" tabIndex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="deleteModalLabel">Confirmar cancelación</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              ¿Estás seguro de que quieres cancelar esta cita?
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" className="btn btn-danger" onClick={handleConfirmCancel} data-bs-dismiss="modal">Confirmar</button>
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
