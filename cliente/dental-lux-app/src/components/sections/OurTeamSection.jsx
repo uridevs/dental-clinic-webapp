@@ -13,11 +13,11 @@ const OurTeamSection = () => {
     // Escuchar eventos de Swiper usando addEventListener
     swiperElRef.current.addEventListener("swiperprogress", (e) => {
       const [swiper, progress] = e.detail;
-      console.log(progress);
+      
     });
 
     swiperElRef.current.addEventListener("swiperslidechange", (e) => {
-      console.log("slide changed");
+      
     });
   }, []);
 
@@ -26,7 +26,7 @@ const OurTeamSection = () => {
       <div className="container">
         <div className="row">
           <div className="display-header mb-5">
-            <h2 className="display-5 fw-bold text-dark">Nuestro Equipo</h2>
+            <h2 className="display-5 fw-bold text-dark">Nuestro Equipo de Profesionales</h2>
           </div>
           <div className="team-content">
             <swiper-container

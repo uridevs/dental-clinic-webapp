@@ -6,6 +6,7 @@ const empleadosValidations = require('../validations/empleadosValidations');
 const { verifyToken } = require('../middlewares/authMiddleware');
 
 
+router.get('/dni', empleadosController.listarEmpleadoPorDNI);  // Ajuste para obtener por DNI
 router.get('/doctores', empleadosController.listarDoctores);
 router.get('/', empleadosController.listarEmpleados);
 router.get('/:id', empleadosController.listarEmpleado);

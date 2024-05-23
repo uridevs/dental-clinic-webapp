@@ -1,5 +1,4 @@
 (function($) {
-
     "use strict";
                 // init Chocolat light box
                 var initChocolat = function () {
@@ -38,34 +37,6 @@
             $(".close-button").click(function(){
               $(".search-box").toggleClass('active');
             });  
-
-          var swiper = new Swiper(".testimonial-swiper", {
-            loop: true,
-            pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-            },
-          }); 
-
-
-          var swiper = new Swiper(".team-swiper", {
-            slidesPerView: 2,
-            spaceBetween: 20,
-            pagination: {
-              el: "#our-team .swiper-pagination",
-              clickable: true,
-            },
-            breakpoints: {
-              0: {
-                slidesPerView: 1,
-                spaceBetween: 20,
-              },
-              1200: {
-                slidesPerView: 2,
-                spaceBetween: 10,
-              },
-            },
-          });  
 
           window.addEventListener("load", (event) => {
             //isotope

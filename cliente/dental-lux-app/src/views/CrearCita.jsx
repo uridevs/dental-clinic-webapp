@@ -88,59 +88,57 @@ const CrearCita = () => {
     const errors = {};
     const now = new Date();
     const twoHoursLater = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-
     if (!validator.isInt(selectedDoctor)) errors.selectedDoctor = 'Debe seleccionar un doctor válido';
     if (!validator.isInt(selectedTratamiento)) errors.selectedTratamiento = 'Debe seleccionar un tratamiento válido';
     if (!validator.isISO8601(fecha)) errors.fecha = 'Debe seleccionar una fecha válida';
     const selectedDate = new Date(`${fecha}T${hora}`);
     if (selectedDate < twoHoursLater) errors.fechaHora = 'Debe seleccionar una fecha y hora al menos dos horas después de la hora actual';
     if (!hora) errors.hora = 'Debe seleccionar una hora válida';
-    if (!notas) errors.notas = 'Debe añadir notas';
     return errors;
-};
-
-const handleSubmit = async (event) => {
-  event.preventDefault();
-  if (!paciente) {
-    setAlert({ show: true, message: 'Paciente no encontrado', type: 'danger' });
-    return;
-  }
-
-  const fieldErrors = validateFields();
-  if (Object.keys(fieldErrors).length > 0) {
-    setFieldErrors(fieldErrors);
-    const errorMessages = Object.values(fieldErrors).join(', ');
-    setAlert({ show: true, message: `Por favor, corrija los errores en el formulario: ${errorMessages}`, type: 'danger' });
-    return;
-  }
-
-  const inicio = new Date(`${fecha}T${hora}`);
-  const fin = new Date(inicio);
-  fin.setMinutes(inicio.getMinutes() + 30);
-
-  const nuevaCita = {
-    id_paciente: paciente.id_paciente,
-    inicio: inicio.toISOString(),
-    fin: fin.toISOString(),
-    id_empleado: selectedDoctor,
-    id_tipo_tratamiento: selectedTratamiento,
-    notas: `Nota paciente: ${notas}`,
   };
 
-  try {
-    await api.post('/citas', nuevaCita);
-    setAlert({ show: true, message: 'Cita creada con éxito. Redirigiendo...', type: 'success' });
-    setTimeout(() => {
-      if (user.role === 'paciente') {
-        navigate(`/paciente/${user.idEspecifico}`);
-      } else {
-        navigate('/citas');
-      }
-    }, 4500); // 4.5 segundos de retraso
-  } catch (error) {
-    setAlert({ show: true, message: error.response?.data || 'Error al crear la cita', type: 'danger' });
-  }
-};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!paciente) {
+      setAlert({ show: true, message: 'Paciente no encontrado', type: 'danger' });
+      return;
+    }
+
+    const fieldErrors = validateFields();
+    if (Object.keys(fieldErrors).length > 0) {
+      setFieldErrors(fieldErrors);
+      const errorMessages = Object.values(fieldErrors).join(', ');
+      setAlert({ show: true, message: `Por favor, corrija los errores en el formulario: ${errorMessages}`, type: 'danger' });
+      return;
+    }
+
+    const inicio = new Date(`${fecha}T${hora}`);
+    const fin = new Date(inicio);
+    fin.setMinutes(inicio.getMinutes() + 30);
+
+    const nuevaCita = {
+      id_paciente: paciente.id_paciente,
+      inicio: inicio.toISOString(),
+      fin: fin.toISOString(),
+      id_empleado: selectedDoctor,
+      id_tipo_tratamiento: selectedTratamiento,
+      notas: `Nota paciente: ${notas}`,
+    };
+
+    try {
+      await api.post('/citas', nuevaCita);
+      setAlert({ show: true, message: 'Cita creada con éxito. Redirigiendo...', type: 'success' });
+      setTimeout(() => {
+        if (user.role === 'paciente') {
+          navigate(`/paciente/${user.idEspecifico}`);
+        } else {
+          navigate('/citas');
+        }
+      }, 4500); // 4.5 segundos de retraso
+    } catch (error) {
+      setAlert({ show: true, message: error.response?.data || 'Error al crear la cita', type: 'danger' });
+    }
+  };
 
   if (!user) {
     return <div>Cargando...</div>;
@@ -264,9 +262,8 @@ const handleSubmit = async (event) => {
                   onChange={(e) => setNotas(e.target.value)}
                   disabled={!paciente}
                 />
-                {fieldErrors.notas && <div className="text-danger">{fieldErrors.notas}</div>}
               </div>
-              <button type="submit" className="btn btn-primary" disabled={!paciente || !selectedTratamiento}>Crear Cita</button>
+              <button type="submit" className="btn btn-primary" title="enviar" disabled={!paciente || !selectedTratamiento}>Crear Cita</button>
               {alert.show && (
                 <div className={`alert alert-${alert.type} mt-3`} role="alert">
                   {alert.message}

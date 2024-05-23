@@ -6,8 +6,9 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 const citasValidations = require('../validations/citasValidations');
 
 
-router.post('/', citasValidations.validarCrearCita,verifyToken, citasController.crearCita);
+router.post('/', citasValidations.validarCrearCita, verifyToken, citasController.crearCita);
 router.get('/', verifyToken, citasController.listarCitas);
+router.get('/proximas', verifyToken, citasController.listarCitasProximas);
 router.get('/paciente/:id', verifyToken, citasController.listarPorPaciente);
 router.get('/doctor/:id', verifyToken, citasController.listarPorDoctor);
 router.put('/:id', verifyToken, citasController.modificarCita);

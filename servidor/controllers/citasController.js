@@ -3,7 +3,7 @@ const { sequelize, Cita, Paciente, Empleado, Tratamiento, Intervencion } = requi
 const { Op } = require('sequelize');
 
 exports.crearCita = async (req, res) => {
-    const { id_paciente, inicio, fin, id_empleado, id_tipo_tratamiento } = req.body;
+    const { id_paciente, inicio, fin, id_empleado, id_tipo_tratamiento, notas } = req.body;
 
     const solapamiento = await Cita.findOne({
         where: {
@@ -34,7 +34,8 @@ exports.crearCita = async (req, res) => {
                 id_empleado,
                 id_intervencion: nuevaIntervencion.id_intervencion,
                 estado: "Pendiente",
-                id_tipo_tratamiento
+                id_tipo_tratamiento,
+                notas: notas || "" // Permitimos enviar el campo notas vacío
             }, { transaction: t });
 
             return { nuevaCita, nuevaIntervencion };
@@ -67,6 +68,38 @@ exports.listarCitas = async (req, res) => {
                 ]
             });
         }
+        res.json(citas);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+exports.listarCitasProximas = async (req, res) => {
+    try {
+        const { role, idEspecifico } = req.user; // Asumiendo que esto viene del middleware de autenticación
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + 1);
+
+        let whereClause = {
+            inicio: {
+                [Op.between]: [startDate, endDate],
+            },
+        };
+
+        if (role === '2') { // Si es un doctor
+            whereClause.id_empleado = idEspecifico;
+        }
+
+        const citas = await Cita.findAll({
+            where: whereClause,
+            include: [
+                { model: Paciente, attributes: ['nombre', 'apellidos'], as: 'paciente' },
+                { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+                { model: Tratamiento, attributes: ['nombre_tratamiento'], as: 'tratamiento' },
+            ],
+        });
+
         res.json(citas);
     } catch (error) {
         res.status(500).send(error.message);

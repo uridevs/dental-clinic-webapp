@@ -1,17 +1,16 @@
-import Navbar from "./Navbar";
-import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import Navbar from './Navbar';
+import './Button.css'; // Importa el archivo CSS con el diseño del botón
 
 const Header = () => {
-    const { user, logout } = useContext(AuthContext);
-    const location = useLocation();
-    const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Determinar si la ruta actual es /login o /registro
   const isLoginOrRegister = location.pathname === '/login' || location.pathname === '/registro';
-
-  const isHomePage = location.pathname === '/'; // Verificar si la ruta actual es la página principal
+  const isHomePage = location.pathname === '/';
 
   const handleAccountClick = () => {
     if (user) {
@@ -26,7 +25,6 @@ const Header = () => {
       navigate('/login');
     }
   };
-
 
   return (
     <header id="header">
@@ -62,15 +60,15 @@ const Header = () => {
                 </li>
               </ul>
             </div>
-            <div className="d-flex justify-content-center col-lg-4 col-md-4 col-sm-6 gap-2">
+            <div className="d-flex justify-content-end col-lg-4 col-md-4 col-sm-6 gap-2">
               {!isLoginOrRegister && (
                 <>
-                  <button className="btn btn-primary" onClick={handleAccountClick}>
-                    {user ? "Mi area" : "Login"}
+                  <button className="button-19" onClick={handleAccountClick}>
+                    {user ? "Mi área" : "Login"}
                   </button>
                   {user && <button className="btn btn-link text-danger p-0" onClick={logout} title="Logout">
-                <i className="fas fa-sign-out-alt fa-lg"></i>
-              </button>}
+                    <i className="fas fa-sign-out-alt fa-lg"></i>
+                  </button>}
                 </>
               )}
             </div>
@@ -78,7 +76,6 @@ const Header = () => {
         </div>
       </div>
       {isHomePage && <Navbar user={user} />} 
-
     </header>
   );
 };

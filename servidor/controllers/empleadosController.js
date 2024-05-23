@@ -16,6 +16,28 @@ exports.listarEmpleados = async (req, res) => {
   }
 };
 
+exports.listarEmpleadoPorDNI = async (req, res) => {
+  try {
+    const { dni } = req.query; // Obtener el DNI de los parámetros de consulta
+    const empleado = await Empleado.findOne({
+      where: { dni },
+      include: {
+        model: Usuario,
+        as: 'usuario',
+        attributes: ['role']
+      }
+    }); // Buscar por DNI
+    if (empleado) {
+      res.json(empleado);
+    } else {
+      res.status(404).send("Empleado no encontrado");
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+
 exports.listarDoctores = async (req, res) => {
   try {
     const empleados = await Empleado.findAll({

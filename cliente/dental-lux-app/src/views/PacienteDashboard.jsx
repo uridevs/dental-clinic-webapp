@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../layout/Layout";
-import { format } from 'date-fns';
+import { format } from "date-fns";
 
 const PacienteDashboard = () => {
   const { id } = useParams();
@@ -38,16 +38,22 @@ const PacienteDashboard = () => {
 
   const handleCancelClick = (citaId) => {
     setSelectedCitaId(citaId);
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    const deleteModal = new bootstrap.Modal(
+      document.getElementById("deleteModal")
+    );
     deleteModal.show();
   };
 
   const handleConfirmCancel = async () => {
     try {
-      await api.put(`/citas/${selectedCitaId}`, { estado: 'Cancelada' });
-      setCitas(citas.map(cita => cita.id === selectedCitaId ? { ...cita, estado: 'Cancelada' } : cita));
+      await api.put(`/citas/${selectedCitaId}`, { estado: "Cancelada" });
+      setCitas(
+        citas.map((cita) =>
+          cita.id === selectedCitaId ? { ...cita, estado: "Cancelada" } : cita
+        )
+      );
     } catch (error) {
-      console.error('Error al cancelar la cita', error);
+      console.error("Error al cancelar la cita", error);
     }
   };
 
@@ -61,7 +67,7 @@ const PacienteDashboard = () => {
 
   return (
     <Layout>
-      <nav className="sb-topnav navbar navbar-expand navbar-primary bg-primary">
+      <nav className="sb-topnav navbar navbar-expand navbar-primary bg-primary justify-content-between">
         <a className="navbar-brand ps-3" href="">
           Dental Luxe APP
         </a>
@@ -109,11 +115,13 @@ const PacienteDashboard = () => {
         <div className="row mt-5">
           <div className="col-xl-3 col-md-6">
             <div className="card bg-primary text-white mb-4">
-              <div className="card-body"><i className="fas fa-tachometer-alt"></i> Panel de Control</div>
+              <div className="card-body">
+                <i className="fas fa-tachometer-alt"></i> Panel de Control
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <a className="small text-white stretched-link" href="#">
-                  Ir
-                </a>
+                <Link className="small text-white stretched-link" to="/CambioPass">
+                  Cambiar contraseña
+                </Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -122,11 +130,13 @@ const PacienteDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-warning text-white mb-4">
-              <div className="card-body"><i className="fas fa-user-edit"></i> Perfil paciente </div>
+              <div className="card-body">
+                <i className="fas fa-user-edit"></i> Perfil paciente{" "}
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <a className="small text-white stretched-link" href="#">
-                  Editar
-                </a>
+              <Link className="small text-white stretched-link" to="/editarusuario">
+                  Editar datos
+                </Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -135,9 +145,13 @@ const PacienteDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-success text-white mb-4">
-              <div className="card-body"><i className="fas fa-calendar-check"></i> Historial</div>
+              <div className="card-body">
+                <i className="fas fa-calendar-check"></i> Historial
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-              <Link className="small text-white stretched-link" to="/Citas">Ver historial de citas</Link>
+                <Link className="small text-white stretched-link" to="/Citas">
+                  Ver historial de citas
+                </Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -146,9 +160,16 @@ const PacienteDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-dark text-white mb-4">
-              <div className="card-body"><i className="fas fa-calendar-alt me-1"></i>Mis Citas</div>
+              <div className="card-body">
+                <i className="fas fa-calendar-alt me-1"></i>Mis Citas
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-              <Link className="small text-white stretched-link" to="/CrearCita">Pedir Cita</Link>
+                <Link
+                  className="small text-white stretched-link"
+                  to="/CrearCita"
+                >
+                  Pedir Cita
+                </Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -166,7 +187,7 @@ const PacienteDashboard = () => {
                 </li>
               </ol>
               <div className="row">
-                <div className="col-xl-6">
+                <div className="col-xl-4">
                   <div className="card mb-4">
                     <div className="card-header">
                       <i className="fas fa-user me-1"></i>
@@ -181,12 +202,13 @@ const PacienteDashboard = () => {
                         <strong>Email:</strong> {paciente && paciente.email}
                       </p>
                       <p>
-                        <strong>Teléfono:</strong> {paciente && paciente.telefono}
+                        <strong>Teléfono:</strong>{" "}
+                        {paciente && paciente.telefono}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="col-xl-6">
+                <div className="col-xl-8">
                   <div className="card mb-4">
                     <div className="card-header">
                       <i className="fas fa-calendar-alt me-1"></i>
@@ -205,16 +227,29 @@ const PacienteDashboard = () => {
                         <tbody>
                           {citas.map((cita) => (
                             <tr key={cita.id}>
-                              <td>{format(new Date(cita.inicio), 'dd/MM/yyyy')}</td>
-                              <td>{format(new Date(cita.inicio), 'HH:mm')}</td>
-                              <td>{cita.doctor ? `${cita.doctor.nombre} ${cita.doctor.apellidos}` : 'null'}</td>
                               <td>
-                                {cita.estado === 'Cancelada' ? (
-                                  <button className="btn btn-danger btn-sm" disabled>
+                                {format(new Date(cita.inicio), "dd/MM/yyyy")}
+                              </td>
+                              <td>{format(new Date(cita.inicio), "HH:mm")}</td>
+                              <td>
+                                {cita.doctor
+                                  ? `${cita.doctor.nombre} ${cita.doctor.apellidos}`
+                                  : "null"}
+                              </td>
+                              <td>
+                                {cita.estado === "Cancelada" ? (
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    disabled
+                                  >
                                     Cancelada
                                   </button>
                                 ) : (
-                                  <button className="btn btn-danger btn-sm" title="Cancelar Cita" onClick={() => handleCancelClick(cita.id)}>
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    title="Cancelar Cita"
+                                    onClick={() => handleCancelClick(cita.id)}
+                                  >
                                     <i className="fas fa-times"></i>
                                   </button>
                                 )}
@@ -242,19 +277,45 @@ const PacienteDashboard = () => {
       </div>
 
       {/* Modal de Confirmación */}
-      <div className="modal fade" id="deleteModal" tabIndex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div
+        className="modal fade"
+        id="deleteModal"
+        tabIndex="-1"
+        aria-labelledby="deleteModalLabel"
+        aria-hidden="true"
+      >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="deleteModalLabel">Confirmar cancelación</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h5 className="modal-title" id="deleteModalLabel">
+                Confirmar cancelación
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
             <div className="modal-body">
               ¿Estás seguro de que quieres cancelar esta cita?
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" className="btn btn-danger" onClick={handleConfirmCancel} data-bs-dismiss="modal">Confirmar</button>
+              <button
+                type="button"
+                className="btn btn-warning"
+                data-bs-dismiss="modal"
+              >
+                Volver
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={handleConfirmCancel}
+                data-bs-dismiss="modal"
+              >
+                Confirmar
+              </button>
             </div>
           </div>
         </div>

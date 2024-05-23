@@ -1,52 +1,66 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "../layout/Layout";
 import api from "../api/api";
+import { AuthContext } from "../context/AuthContext";
 
-const EditarEmpleado = () => {
-  const { id } = useParams();
-  const [empleado, setEmpleado] = useState({
+const EditarUsuario = () => {
+  const { user } = useContext(AuthContext);
+  const [datos, setDatos] = useState({
     nombre: "",
     apellidos: "",
     email: "",
     telefono: "",
+    dni: "",
+    id_categoria_profesional: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchEmpleado = async () => {
+    const fetchUsuarioData = async () => {
       try {
-        const { data } = await api.get(`/empleados/${id}`);
-        setEmpleado(data);
+        const { data } = await api.get(
+          user.role === "paciente"
+            ? `/pacientes/${user.idEspecifico}`
+            : `/empleados/${user.idEspecifico}`
+        );
+        setDatos(data);
         setLoading(false);
       } catch (error) {
-        setError("Error al cargar la información del empleado");
+        console.error("Error fetching usuario data:", error);
+        setError("Error al cargar la información del usuario");
         setLoading(false);
       }
     };
 
-    fetchEmpleado();
-  }, [id]);
+    fetchUsuarioData();
+  }, [user.idEspecifico, user.role]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEmpleado({ ...empleado, [name]: value });
+    setDatos({ ...datos, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/empleados/${id}`, empleado);
-      navigate("/administrador");
+      await api.put(
+        `/${user.role === "paciente" ? "pacientes" : "empleados"}/${
+          user.idEspecifico
+        }`,
+        datos
+      );
+      navigate(user.role === "paciente" ? `/paciente/${user.idEspecifico}` : `/empleado/${user.idEspecifico}`);
     } catch (error) {
-      setError("Error al actualizar la información del empleado");
+      console.error("Error updating usuario data:", error);
+      setError("Error al actualizar la información del usuario");
     }
   };
 
   const handleVolver = () => {
-    navigate("/Administrador");
+    navigate(user.role === "paciente" ? `/paciente/${user.idEspecifico}` : `/empleado/${user.idEspecifico}`);
   };
 
   if (loading) {
@@ -71,9 +85,22 @@ const EditarEmpleado = () => {
           <div className="col-md-6">
             <fieldset className="card p-4">
               <legend className="card-title text-center">
-                Editar Empleado
+                Editar Usuario
               </legend>
               <form onSubmit={handleSubmit}>
+                <div className="form-group mb-3">
+                  <label htmlFor="dni" className="form-label">
+                    DNI:
+                  </label>
+                  <input
+                    type="text"
+                    name="dni"
+                    id="dni"
+                    className="form-control"
+                    value={datos.dni}
+                    disabled
+                  />
+                </div>
                 <div className="form-group mb-3">
                   <label htmlFor="nombre" className="form-label">
                     Nombre:
@@ -83,7 +110,7 @@ const EditarEmpleado = () => {
                     name="nombre"
                     id="nombre"
                     className="form-control"
-                    value={empleado.nombre}
+                    value={datos.nombre}
                     onChange={handleChange}
                   />
                 </div>
@@ -96,7 +123,7 @@ const EditarEmpleado = () => {
                     name="apellidos"
                     id="apellidos"
                     className="form-control"
-                    value={empleado.apellidos}
+                    value={datos.apellidos}
                     onChange={handleChange}
                   />
                 </div>
@@ -109,7 +136,7 @@ const EditarEmpleado = () => {
                     name="email"
                     id="email"
                     className="form-control"
-                    value={empleado.email}
+                    value={datos.email}
                     onChange={handleChange}
                   />
                 </div>
@@ -122,10 +149,11 @@ const EditarEmpleado = () => {
                     name="telefono"
                     id="telefono"
                     className="form-control"
-                    value={empleado.telefono}
+                    value={datos.telefono}
                     onChange={handleChange}
                   />
                 </div>
+                
                 <button type="submit" className="btn btn-primary">
                   Guardar Cambios
                 </button>
@@ -138,4 +166,4 @@ const EditarEmpleado = () => {
   );
 };
 
-export default EditarEmpleado;
+export default EditarUsuario;

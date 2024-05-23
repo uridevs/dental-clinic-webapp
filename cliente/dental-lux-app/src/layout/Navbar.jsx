@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
+const Navbar = ({ user }) => { // estado del usuario como prop
   const handleClick = (e) => {
     e.preventDefault();
     const target = e.target.getAttribute("href").substring(1);
@@ -74,7 +74,7 @@ const Navbar = ({ user }) => { // Recibir el estado del usuario como prop
             </li>
             <li className="nav-item ps-4 pe-4 border-right">
               <a className="nav-link text-dark p-0" href="#faqs">
-                Preguntas Frecuentes
+                Dudas Frecuentes
               </a>
             </li>
             <li className="nav-item ps-4 pe-4 border-right">

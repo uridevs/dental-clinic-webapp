@@ -60,9 +60,9 @@ const AdministradorDashboard = () => {
         <div className="row mt-5">
           <div className="col-xl-4 col-md-6 mb-4">
             <div className="card bg-primary text-white h-100">
-              <div className="card-body"><i className="fas fa-users"></i> Gestionar Pacientes</div>
+              <div className="card-body"><i className="fas fa-users"></i> Gestionar Usuarios</div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <Link className="small text-white stretched-link" to="/administrador/pacientes">Ir</Link>
+                <Link className="small text-white stretched-link" to="crear-empleado">Crear empleado</Link>
                 <div className="small text-white"><i className="fas fa-angle-right"></i></div>
               </div>
             </div>

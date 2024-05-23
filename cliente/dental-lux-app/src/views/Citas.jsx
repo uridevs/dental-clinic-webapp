@@ -187,87 +187,91 @@ const Citas = () => {
                 <h2 className="text-center">
                   Citas {key.charAt(0).toUpperCase() + key.slice(1)}
                 </h2>
-                <table className="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Paciente</th>
-                      <th>Doctor</th>
-                      <th>Tratamiento</th>
-                      <th>Inicio</th>
-                      <th>Fin</th>
-                      <th>Estado</th>
-                      {user.role !== "paciente" && <th>Acciones</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {citas[key].map((cita) => (
-                      <tr key={cita.id}>
-                        <td>
-                          {cita.paciente
-                            ? `${cita.paciente.nombre} ${cita.paciente.apellidos}`
-                            : "N/A"}
-                        </td>
-                        <td>
-                          {cita.doctor
-                            ? `${cita.doctor.nombre} ${cita.doctor.apellidos}`
-                            : "N/A"}
-                        </td>
-                        <td>
-                          {cita.tratamiento
-                            ? cita.tratamiento.nombre_tratamiento
-                            : "N/A"}
-                        </td>
-                        <td>
-                          {format(new Date(cita.inicio), "dd/MM/yyyy HH:mm")}
-                        </td>
-                        <td>{format(new Date(cita.fin), "dd/MM/yyyy HH:mm")}</td>
-                        <td>
-                          {user.role === "paciente" ? (
-                            cita.estado
-                          ) : (
-                            <>
-                              <select
-                                className="form-select form-select-sm"
-                                value={
-                                  selectedCita && selectedCita.id === cita.id
-                                    ? selectedCita.estado
-                                    : cita.estado
-                                }
-                                onChange={(e) =>
-                                  handleEstadoChange(cita, e.target.value)
-                                }
-                              >
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="Cancelada">Cancelada</option>
-                                <option value="En Espera">En Espera</option>
-                                <option value="En Progreso">En Progreso</option>
-                                <option value="Completada">Completada</option>
-                              </select>
-                              <button
-                                className="btn btn-success btn-sm ms-2"
-                                onClick={() =>
-                                  handleGuardarEstado(selectedCita || cita)
-                                }
-                              >
-                                <i className="fas fa-save"></i>
-                              </button>
-                            </>
-                          )}
-                        </td>
-                        {user.role === "1" && (
-                          <td>
-                            <button
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleEliminar(cita.id)}
-                            >
-                              Eliminar
-                            </button>
-                          </td>
-                        )}
+                <div className="table-responsive">
+                  <table className="table table-bordered table-striped">
+                    <thead>
+                      <tr>
+                        <th>Cita</th>
+                        <th>Paciente</th>
+                        <th>Doctor</th>
+                        <th>Tratamiento</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Estado</th>
+                        {user.role !== "paciente" && <th>Acciones</th>}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {citas[key].map((cita) => (
+                        <tr key={cita.id}>
+                          <td>{cita.id}</td>
+                          <td>
+                            {cita.paciente
+                              ? `${cita.paciente.nombre} ${cita.paciente.apellidos}`
+                              : "N/A"}
+                          </td>
+                          <td>
+                            {cita.doctor
+                              ? `${cita.doctor.nombre} ${cita.doctor.apellidos}`
+                              : "N/A"}
+                          </td>
+                          <td>
+                            {cita.tratamiento
+                              ? cita.tratamiento.nombre_tratamiento
+                              : "N/A"}
+                          </td>
+                          <td>
+                            {format(new Date(cita.inicio), "dd/MM/yyyy HH:mm")}
+                          </td>
+                          <td>{format(new Date(cita.fin), "dd/MM/yyyy HH:mm")}</td>
+                          <td>
+                            {user.role === "paciente" ? (
+                              cita.estado
+                            ) : (
+                              <>
+                                <select
+                                  className="form-select form-select-sm"
+                                  value={
+                                    selectedCita && selectedCita.id === cita.id
+                                      ? selectedCita.estado
+                                      : cita.estado
+                                  }
+                                  onChange={(e) =>
+                                    handleEstadoChange(cita, e.target.value)
+                                  }
+                                >
+                                  <option value="Pendiente">Pendiente</option>
+                                  <option value="Cancelada">Cancelada</option>
+                                  <option value="En Espera">En Espera</option>
+                                  <option value="En Proceso">En Proceso</option>
+                                  <option value="Finalizada">Finalizada</option>
+                                </select>
+                                <button
+                                  className="btn btn-success btn-sm ms-2"
+                                  onClick={() =>
+                                    handleGuardarEstado(selectedCita || cita)
+                                  }
+                                >
+                                  <i className="fas fa-save"></i>
+                                </button>
+                              </>
+                            )}
+                          </td>
+                          {user.role === "1" && (
+                            <td>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleEliminar(cita.id)}
+                              >
+                                Eliminar
+                              </button>
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )
         )}

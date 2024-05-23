@@ -40,6 +40,10 @@ const EditarPaciente = () => {
     }
   };
 
+  const handleVolver = () => {
+    navigate("/Administrador");
+  };
+
   if (loading) {
     return <div>Cargando...</div>;
   }
@@ -51,6 +55,13 @@ const EditarPaciente = () => {
   return (
     <Layout>
       <div className="container mt-5">
+      <div className="text-center">
+          <div className="d-flex justify-content-center gap-2 mb-4">
+            <button className="btn btn-secondary" onClick={handleVolver}>
+              Volver
+            </button>
+          </div>
+        </div>
         <div className="row justify-content-center">
           <div className="col-md-6">
             <fieldset className="card p-4">

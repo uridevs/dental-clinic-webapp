@@ -1,8 +1,8 @@
-import { useRef, useEffect } from 'react';
-import { register } from 'swiper/element/bundle';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import { useRef, useEffect } from "react";
+import { register } from "swiper/element/bundle";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 register();
 
@@ -10,14 +10,13 @@ const Testimonial = () => {
   const swiperElRef = useRef(null);
 
   useEffect(() => {
-    
-    swiperElRef.current.addEventListener('swiperprogress', (e) => {
+    swiperElRef.current.addEventListener("swiperprogress", (e) => {
       const [swiper, progress] = e.detail;
-      console.log(progress);
+      
     });
 
-    swiperElRef.current.addEventListener('swiperslidechange', (e) => {
-      console.log('slide changed');
+    swiperElRef.current.addEventListener("swiperslidechange", (e) => {
+      
     });
   }, []);
 
@@ -30,7 +29,7 @@ const Testimonial = () => {
         backgroundPosition: "right",
         height: "595px",
       }}
-    >
+    > 
       <div className="container">
         <div className="row align-items-center padding-medium">
           <div className="col-lg-5 col-md-4">
@@ -62,12 +61,11 @@ const Testimonial = () => {
                     </svg>
                     <blockquote className="fs-4">
                       <p>
-                        Mi experiencia en Dental Luxe ha sido sobresaliente.
-                        El personal es increíblemente cuidadoso y el ambiente
-                        es muy confortable. Tras recibir varios tratamientos
-                        de implantología, estoy impresionado con los
-                        resultados. Altamente recomendado por su
-                        profesionalismo y calidad.
+                        Mi experiencia en Dental Luxe ha sido sobresaliente. El
+                        personal es increíblemente cuidadoso y el ambiente es
+                        muy confortable. Tras recibir varios tratamientos de
+                        implantología, estoy impresionado con los resultados.
+                        Altamente recomendado por su profesionalismo y calidad.
                       </p>
                       <div className="author-detail">
                         <div className="name fs-3 fw-bold text-dark">
@@ -102,12 +100,12 @@ const Testimonial = () => {
                         El equipo es muy profesional y amable, y me explicaron
                         cada paso del tratamiento con detalle. Me sometí a un
                         procedimiento de estética dental, y los resultados
-                        superaron todas mis expectativas. Mi sonrisa nunca
-                        había lucido tan bien, y el proceso fue totalmente
-                        indoloro! Sin duda recomiendo Dental Luxe a cualquiera
-                        que busque mejorar su sonrisa en un ambiente de
-                        confianza y profesionalismo. ¡Gracias por devolverme
-                        la confianza en mi sonrisa!
+                        superaron todas mis expectativas. Mi sonrisa nunca había
+                        lucido tan bien, y el proceso fue totalmente indoloro!
+                        Sin duda recomiendo Dental Luxe a cualquiera que busque
+                        mejorar su sonrisa en un ambiente de confianza y
+                        profesionalismo. ¡Gracias por devolverme la confianza en
+                        mi sonrisa!
                       </p>
                       <div className="author-detail">
                         <div className="name fs-3 fw-bold text-dark">
@@ -141,9 +139,9 @@ const Testimonial = () => {
                       <p>
                         Visitar Dental Luxe fue la mejor decisión para mi
                         tratamiento de ortodoncia. El proceso fue claro y el
-                        trato, excepcional. Los resultados han sido
-                        fantásticos y el cuidado post-tratamiento, impecable.
-                        Realmente se nota la calidad y atención al detalle.
+                        trato, excepcional. Los resultados han sido fantásticos
+                        y el cuidado post-tratamiento, impecable. Realmente se
+                        nota la calidad y atención al detalle.
                       </p>
                       <div className="author-detail">
                         <div className="name fs-3 fw-bold text-dark">
