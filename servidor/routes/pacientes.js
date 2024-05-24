@@ -3,7 +3,7 @@ const router = express.Router();
 const pacientesController = require('../controllers/pacientesController');
 const pacientesValidations = require('../validations/pacientesValidations');
 
-router.get('/dni', pacientesController.listarPacientePorDNI);  // Ajuste para obtener por DNI
+router.get('/dni', pacientesController.listarPacientePorDNI);  
 router.get('/', pacientesController.listarPacientes);
 router.get('/:id', pacientesController.listarPaciente);
 router.post('/', pacientesValidations.validarCrearPaciente, pacientesController.crearPaciente);

@@ -65,6 +65,9 @@ const PacienteDashboard = () => {
     return <div>{error}</div>;
   }
 
+  // Filtrar citas futuras
+  const citasFuturas = citas.filter(cita => new Date(cita.inicio) > Date.now());
+
   return (
     <Layout>
       <nav className="sb-topnav navbar navbar-expand navbar-primary bg-primary justify-content-between">
@@ -134,7 +137,7 @@ const PacienteDashboard = () => {
                 <i className="fas fa-user-edit"></i> Perfil paciente{" "}
               </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-              <Link className="small text-white stretched-link" to="/editarusuario">
+                <Link className="small text-white stretched-link" to="/editarusuario">
                   Editar datos
                 </Link>
                 <div className="small text-white">
@@ -225,7 +228,7 @@ const PacienteDashboard = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {citas.map((cita) => (
+                          {citasFuturas.map((cita) => (
                             <tr key={cita.id}>
                               <td>
                                 {format(new Date(cita.inicio), "dd/MM/yyyy")}

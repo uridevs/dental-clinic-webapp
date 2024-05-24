@@ -3,7 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');
 const rateLimit = require('express-rate-limit');
-
+require('dotenv').config();
 
 // apilimiter config
 const apiLimiter = rateLimit({

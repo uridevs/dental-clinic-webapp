@@ -42,14 +42,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(user));
       setUser(user);
-      // Maneja la redirección aquí
-      if (decodedToken.role === "1") {
-        navigate("/Administrador");
-      } else if (decodedToken.role === 'paciente') {
-        navigate(`/paciente/${user.idEspecifico}`);
-      } else {
-        navigate(`/empleado/${user.idEspecifico}`);
-      }
     } catch (error) {
       console.error("Error during login", error);
       throw error;

@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Autenticación fallida' });
         }
 
-        const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, 'your_secret_key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, process.env.TOKEN_SECRET_KEY, { expiresIn: '1h' });
 
         let idEspecifico;
         if (usuario.role === 'paciente') {

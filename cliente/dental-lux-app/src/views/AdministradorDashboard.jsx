@@ -62,7 +62,7 @@ const AdministradorDashboard = () => {
             <div className="card bg-primary text-white h-100">
               <div className="card-body"><i className="fas fa-users"></i> Gestionar Usuarios</div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <Link className="small text-white stretched-link" to="crear-empleado">Crear empleado</Link>
+                <Link className="small text-white stretched-link" to="crear-empleado">Registrar empleado</Link>
                 <div className="small text-white"><i className="fas fa-angle-right"></i></div>
               </div>
             </div>

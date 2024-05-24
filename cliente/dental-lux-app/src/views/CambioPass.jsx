@@ -1,29 +1,29 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Layout from '../layout/Layout';
-import api from '../api/api';
-import { AuthContext } from '../context/AuthContext';
-import validator from 'validator';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Layout from "../layout/Layout";
+import api from "../api/api";
+import { AuthContext } from "../context/AuthContext";
+import validator from "validator";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const CambioPass = () => {
   const { user } = useContext(AuthContext);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleVolver = () => {
-    if (user.role === 'paciente') {
+    if (user.role === "paciente") {
       navigate(`/paciente/${user.idEspecifico}`);
-    } else if (user.role === '1') {
-      navigate('/Administrador');
+    } else if (user.role === "1") {
+      navigate("/Administrador");
     } else {
       navigate(`/empleado/${user.idEspecifico}`);
     }
@@ -32,40 +32,40 @@ const CambioPass = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmNewPassword) {
-      setError('Las nuevas contraseñas no coinciden');
+      setError("Las nuevas contraseñas no coinciden");
       return;
     }
 
     if (!validator.isStrongPassword(newPassword)) {
-      setError('La nueva contraseña no es suficientemente segura');
+      setError("La nueva contraseña no es suficientemente segura");
       return;
     }
 
     setLoading(true);
     try {
       await api.put(
-        '/usuarios/cambiar-password',
+        "/usuarios/cambiar-password",
         {
           currentPassword,
           newPassword,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       setLoading(false);
-      setSuccess('Contraseña cambiada con éxito');
+      setSuccess("Contraseña cambiada con éxito");
       setTimeout(() => {
         handleVolver();
       }, 2000);
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.data.errors) {
-        setError(error.response.data.errors.map((err) => err.msg).join(', '));
+        setError(error.response.data.errors.map((err) => err.msg).join(", "));
       } else {
-        setError('Error al cambiar la contraseña');
+        setError("Error al cambiar la contraseña");
       }
     }
   };
@@ -76,12 +76,16 @@ const CambioPass = () => {
         <div className="row justify-content-center">
           <div className="col-md-6">
             <fieldset className="card p-4">
-              <legend className="card-title text-center">Cambiar Contraseña</legend>
+              <legend className="card-title text-center">
+                Cambiar Contraseña
+              </legend>
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3 position-relative">
-                  <label htmlFor="currentPassword" className="form-label">Contraseña actual:</label>
+                  <label htmlFor="currentPassword" className="form-label">
+                    Contraseña actual:
+                  </label>
                   <input
-                    type={showCurrentPassword ? 'text' : 'password'}
+                    type={showCurrentPassword ? "text" : "password"}
                     name="currentPassword"
                     id="currentPassword"
                     className="form-control"
@@ -97,9 +101,11 @@ const CambioPass = () => {
                   </button>
                 </div>
                 <div className="form-group mb-3 position-relative">
-                  <label htmlFor="newPassword" className="form-label">Nueva contraseña:</label>
+                  <label htmlFor="newPassword" className="form-label">
+                    Nueva contraseña:
+                  </label>
                   <input
-                    type={showNewPassword ? 'text' : 'password'}
+                    type={showNewPassword ? "text" : "password"}
                     name="newPassword"
                     id="newPassword"
                     className="form-control"
@@ -115,9 +121,11 @@ const CambioPass = () => {
                   </button>
                 </div>
                 <div className="form-group mb-3 position-relative">
-                  <label htmlFor="confirmNewPassword" className="form-label">Confirmar nueva contraseña:</label>
+                  <label htmlFor="confirmNewPassword" className="form-label">
+                    Confirmar nueva contraseña:
+                  </label>
                   <input
-                    type={showConfirmNewPassword ? 'text' : 'password'}
+                    type={showConfirmNewPassword ? "text" : "password"}
                     name="confirmNewPassword"
                     id="confirmNewPassword"
                     className="form-control"
@@ -127,19 +135,33 @@ const CambioPass = () => {
                   <button
                     type="button"
                     className="btn position-absolute top-50 end-0 translate-middle-y"
-                    onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                    onClick={() =>
+                      setShowConfirmNewPassword(!showConfirmNewPassword)
+                    }
                   >
                     {showConfirmNewPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
-                  {loading ? 'Cambiando...' : 'Cambiar Contraseña'}
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={loading}
+                >
+                  {loading ? "Cambiando..." : "Cambiar Contraseña"}
                 </button>
-                <button type="button" className="btn btn-secondary ms-2" onClick={handleVolver}>
+                <button
+                  type="button"
+                  className="btn btn-secondary ms-2"
+                  onClick={handleVolver}
+                >
                   Volver
                 </button>
-                {error && <div className="alert alert-danger mt-3">{error}</div>}
-                {success && <div className="alert alert-success mt-3">{success}</div>}
+                {error && (
+                  <div className="alert alert-danger mt-3">{error}</div>
+                )}
+                {success && (
+                  <div className="alert alert-success mt-3">{success}</div>
+                )}
               </form>
             </fieldset>
           </div>

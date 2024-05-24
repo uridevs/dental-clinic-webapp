@@ -53,6 +53,9 @@ const CrearCita = () => {
       }
     };
 
+    const today = new Date().toISOString().split('T')[0];
+    setFecha(today);
+    
     fetchDoctores();
     fetchEspecialidades();
     fetchPacienteData();
@@ -95,6 +98,16 @@ const CrearCita = () => {
     if (selectedDate < twoHoursLater) errors.fechaHora = 'Debe seleccionar una fecha y hora al menos dos horas después de la hora actual';
     if (!hora) errors.hora = 'Debe seleccionar una hora válida';
     return errors;
+  };
+
+  const handleVolver = () => {
+    if (user.role === "paciente") {
+      navigate(`/paciente/${user.idEspecifico}`);
+    } else if (user.role === "1") {
+      navigate("/Administrador");
+    } else {
+      navigate(`/empleado/${user.idEspecifico}`);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -149,6 +162,11 @@ const CrearCita = () => {
       <div className="container mt-5">
         <div className="text-center mb-4">
           <h1>Crear Nueva Cita</h1>
+          <div className="d-flex justify-content-center gap-2 mb-4">
+            <button className="btn btn-secondary" onClick={handleVolver}>
+              Volver
+            </button>
+          </div>
         </div>
         <div className="card p-4">
           <div className="card-body">
