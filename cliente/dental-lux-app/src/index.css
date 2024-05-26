@@ -24,12 +24,17 @@ a:hover {
 }
 
 body {
+  min-height: 100vh; /* Asegúrate de que el body ocupe toda la altura de la pantalla */
+  padding: 0;
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: var(--body-font);
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--accent-color);
+  background-color: var(--light-color);
 }
+
 
 h1 {
   font-size: 3.2em;
@@ -75,11 +80,11 @@ button:focus-visible {
 
 /*
 
-CSS STRUCTURE:
+ESTRUCTURA DE ESTILOS:
 
 1. VARIABLES
 
-2. GENERAL TYPOGRAPHY
+2. TIPOGRAFÍA GENERAL
   2.1 General Styles
   2.2 Text Color & Weight
   2.3 Background Color
@@ -95,12 +100,12 @@ CSS STRUCTURE:
     - Button Color Scheme
     - Button Aligns
 
-3. CONTENT ELEMENTS
+3. ELEMENTOS DE CONTENIDO
   - Dropdown
   - Svg Color
   - Search Bar
 
-4. SITE STRUCTURE
+4. ESTRUCTURA DEL SITIO
   4.1 Header
   4.2 Intro
   4.3 Best Services Section
@@ -134,8 +139,7 @@ CSS STRUCTURE:
   --cadet-blue-color: #9AB4B7;
 }
 
-/* on mobile devices below 600px
- */
+
 @media screen and (max-width: 600px) {
   :root {
     --header-height: 100px;
@@ -143,17 +147,16 @@ CSS STRUCTURE:
   }
 }
 
-/* Fonts */
 :root {
   --body-font: "Poppins", sans-serif;
   --heading-font: "Poppins", sans-serif;
 }
 
 /*----------------------------------------------*/
-/* 2 GENERAL TYPOGRAPHY */
+/* 2 TIPOGRAFÍA GENERAL */
 /*----------------------------------------------*/
 
-/* 2.1 General Styles
+/* 2.1 Estilos Generales
 /*----------------------------------------------*/
 *,
 *::before,
@@ -217,7 +220,7 @@ strong {
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0);
 }
 
-/* 2.2 Text Color & Weight
+/* 2.2 Color del texto & anchura
 /*----------------------------------------------*/
 .text-primary {
   color: var(--primary-color) !important;
@@ -359,7 +362,7 @@ strong {
   }
 }
 
-/* - Section Title
+/* - Títulos del section
 --------------------------------------------------------------*/
 h1,
 h2,
@@ -385,6 +388,17 @@ h5.light {
   width: 100%;
   border: none;
 }
+.container {
+  max-width: 1200px; 
+  margin: 0 auto; /* Centrar horizontalmente */
+  padding: 0 15px; 
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 10px; /* Reduce el padding en pantallas más pequeñas */
+  }
+}
 
 .container-md {
   max-width: 1465px;
@@ -393,6 +407,45 @@ h5.light {
 .container-lg {
   max-width: 1750px;
 }
+
+#intro .banner-content {
+  margin: auto;
+  width: 88%;
+  bottom: 0;
+}
+
+@media only screen and (max-width: 1530px) {
+  #intro .banner-content {
+    margin: auto;
+    width: 88%;
+  }
+
+  #intro img {
+    width: 100%;
+    height: auto; /* Ajusta la altura automáticamente */
+    object-fit: cover;
+  }
+}
+
+@media only screen and (max-width: 1050px) {
+  #intro .banner-content {
+    margin: auto;
+    width: 95%;
+  }
+
+  #intro img {
+    opacity: 0.4;
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  #intro .banner-content {
+    margin: auto;
+    width: 95%;
+  }
+}
+
+
 
 /*--------------------------------------------------------------
 /** 2.6 Buttons
@@ -582,6 +635,40 @@ h5.light {
 /*--------------------------------------------------------------
 /** 3.CONTENT ELEMENTS
 --------------------------------------------------------------*/
+
+
+/* Tablas */
+
+.pagination button {
+  font-size: 0.875em; /* 87.5% of the original size */
+  padding: 0.25em 0.5em; /* 40% smaller than the default */
+  margin: 0 0.1em;
+  cursor: pointer; /* Cursor changes to pointer on hover */
+}
+
+.pagination select {
+  font-size: 0.875em; /* 87.5% of the original size */
+  padding: 0.25em 0.5em; /* 40% smaller than the default */
+  width: auto; /* Allow the width to adjust based on content */
+  min-width: 120px; /* Set a minimum width to accommodate content */
+}
+
+.pagination button.btn-primary {
+  background-color: #0d6efd; /* Bootstrap primary color */
+  border-color: #0d6efd;
+  color: white;
+}
+
+.pagination-controls button {
+  cursor: pointer;
+}
+
+.form-select-sm {
+  width: 120px; /* Set a minimum width to accommodate content */
+}
+
+
+
 
 /* - Dropdown
 ------------------------------------------------------------- */
@@ -1184,20 +1271,42 @@ button.filter-button.gallery-btn:hover {
 }
 
 
-
-/*--------------------------------------------------------------
-  Booking page style
-  --------------------------------------------------------------*/
 .form-control:focus {
   border: 2px solid var(--black-color);
   box-shadow: none;
 }
 
 
-
-/*--------------------------------------------------------------
-  Department page style
-  --------------------------------------------------------------*/
 span.price-tick {
   color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+  }
+
+  .col {
+    width: 100%;
+  }
+
+  .padding-medium, .padding-large {
+    padding: 1em;
+  }
+
+  .margin-medium, .margin-large {
+    margin: 1em 0;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .text-right {
+    text-align: right;
+  }
 }

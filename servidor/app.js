@@ -1,4 +1,5 @@
 const express = require('express');
+const { swaggerUi, swaggerSpec } = require('./swagger');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { sequelize, Paciente, Empleado, HistorialMedico, Tratamiento, Intervencion } = require('./database.js');
@@ -27,6 +28,8 @@ const citasRoutes = require('./routes/citas');
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 //redirigir peticiones que no sean https en producción
 app.use((req, res, next) => {

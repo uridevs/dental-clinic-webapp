@@ -1,6 +1,8 @@
 import { useContext, useState, useEffect } from "react";
 import Layout from "../layout/Layout";
 import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -9,9 +11,7 @@ const Login = () => {
   const { login, user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
-  const [message, setMessage] = useState("");
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -48,17 +48,44 @@ const Login = () => {
     if (Object.keys(errors).length === 0) {
       try {
         await login({ email, password });
-        setMessage("Login exitoso. Redirigiendo...");
+        toast.success("Sesión iniciada con éxito. Nos alegra verte de nuevo!", {
+          position: "top-right",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light"
+        });
         setLoginSuccess(true);
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          setError("Correo electrónico o contraseña incorrectos");
+          toast.error("Correo electrónico o contraseña incorrectos", {
+            position: "bottom-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light"
+          });
         } else {
-          setError(
-            "Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde."
+          toast.error(
+            "Error al iniciar sesión. Por favor, inténtelo de nuevo más tarde.",
+            {
+              position: "bottom-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark"
+            }
           );
         }
-        setMessage("");
       }
     }
   };
@@ -66,6 +93,7 @@ const Login = () => {
   return (
     <Layout>
       <div className="container mt-5">
+        <ToastContainer />
         <div className="row justify-content-center">
           <div className="col-md-6">
             <fieldset className="card p-4">
@@ -118,10 +146,6 @@ const Login = () => {
                   Entrar
                 </button>
               </form>
-              {message && (
-                <div className="mt-3 alert alert-success">{message}</div>
-              )}
-              {error && <div className="mt-3 alert alert-danger">{error}</div>}
               <div className="text-end mt-3">
                 <p>
                   ¿No tienes cuenta aún? Regístrate{" "}

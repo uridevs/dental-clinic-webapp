@@ -14,7 +14,7 @@ exports.verifyToken = async (req, res, next) => {
             return res.status(401).json({ message: 'No token provided, authorization denied' });
         }
 
-        const decoded = jwt.verify(token, 'your_secret_key');
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
         const usuario = await Usuario.findByPk(decoded.id);
 
         if (!usuario) {

@@ -1,18 +1,22 @@
-import { useEffect, useState, useContext } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import api from '../api/api';
+import { useEffect, useContext, useState } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
+import api from "../api/api";
 import Layout from "../layout/Layout";
-import { AuthContext } from '../context/AuthContext';
-import { format } from 'date-fns';
+import { AuthContext } from "../context/AuthContext";
+import CitasContext from "../context/CitasContext";
+import { format, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 const EmpleadoDashboard = () => {
   const { id } = useParams();
+  const location = useLocation();
+
   const { user, logout } = useContext(AuthContext);
+  const { citas, updateCita, refreshCitas } = useContext(CitasContext);
   const [empleado, setEmpleado] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [selectedCitaId, setSelectedCitaId] = useState(null);
 
   useEffect(() => {
@@ -21,60 +25,97 @@ const EmpleadoDashboard = () => {
         const { data } = await api.get(`/empleados/${id}`);
         setEmpleado(data);
       } catch (error) {
-        setError('Error al cargar la información del empleado');
+        setError("Error al cargar la información del empleado");
       }
     };
 
     const fetchCategorias = async () => {
       try {
-        const { data } = await api.get('/categorias');
+        const { data } = await api.get("/categorias");
         setCategorias(data);
       } catch (error) {
-        setError('Error al cargar las categorías profesionales');
-      }
-    };
-
-    const fetchCitas = async () => {
-      try {
-        const { data } = await api.get(`/citas/proximas`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setCitas(data);
-      } catch (error) {
-        setError('Error al cargar las citas');
+        setError("Error al cargar las categorías profesionales");
       }
     };
 
     fetchEmpleado();
     fetchCategorias();
-    fetchCitas();
+    refreshCitas();
     setLoading(false);
-  }, [id]);
+  }, [id, location]);
 
   const handleCancelClick = (citaId) => {
     setSelectedCitaId(citaId);
-    const deleteModal = new bootstrap.Modal(
-      document.getElementById("deleteModal")
-    );
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
     deleteModal.show();
   };
 
   const handleConfirmCancel = async () => {
     try {
-      await api.put(`/citas/${selectedCitaId}`, { estado: "Cancelada" }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
+      const { data } = await api.put(
+        `/citas/${selectedCitaId}`,
+        { estado: "Cancelada" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
-      setCitas(
-        citas.map((cita) =>
-          cita.id === selectedCitaId ? { ...cita, estado: "Cancelada" } : cita
-        )
       );
+      updateCita(data);
+      refreshCitas(); // Opcional dependiendo del diseño de tu aplicación
     } catch (error) {
       console.error("Error al cancelar la cita", error);
+    }
+  };
+
+  const handleWaitClick = async (citaId) => {
+    try {
+      await api.put(
+        `/citas/${citaId}`,
+        { estado: "En espera" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      refreshCitas();
+    } catch (error) {
+      console.error("Error al cambiar el estado de la cita", error);
+    }
+  };
+
+  const handleProcessClick = async (citaId) => {
+    try {
+      await api.put(
+        `/citas/${citaId}`,
+        { estado: "En proceso" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      refreshCitas();
+    } catch (error) {
+      console.error("Error al cambiar el estado de la cita", error);
+    }
+  };
+
+  const handleFinishClick = async (citaId) => {
+    try {
+      await api.put(
+        `/citas/${citaId}`,
+        { estado: "Finalizada" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      refreshCitas();
+    } catch (error) {
+      console.error("Error al finalizar la cita", error);
     }
   };
 
@@ -86,7 +127,9 @@ const EmpleadoDashboard = () => {
     return <div>{error}</div>;
   }
 
-  const categoriaProfesional = categorias.find(cat => cat.id_categoria_profesional === empleado?.id_categoria_profesional)?.nombre_categoria;
+  const categoriaProfesional = categorias.find(
+    (cat) => cat.id_categoria_profesional === empleado?.id_categoria_profesional
+  )?.nombre_categoria;
 
   return (
     <Layout>
@@ -125,7 +168,11 @@ const EmpleadoDashboard = () => {
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <button className="dropdown-item" onClick={logout} title="Logout">
+                <button
+                  className="dropdown-item"
+                  onClick={logout}
+                  title="Logout"
+                >
                   Logout
                 </button>
               </li>
@@ -138,9 +185,14 @@ const EmpleadoDashboard = () => {
         <div className="row mt-5">
           <div className="col-xl-3 col-md-6">
             <div className="card bg-primary text-white mb-4">
-              <div className="card-body"><i className="fas fa-tachometer-alt"></i> Panel de Control</div>
+              <div className="card-body">
+                <i className="fas fa-tachometer-alt"></i> Panel de Control
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <Link className="small text-white stretched-link" to="/CambioPass">
+                <Link
+                  className="small text-white stretched-link"
+                  to="/CambioPass"
+                >
                   Cambiar contraseña
                 </Link>
                 <div className="small text-white">
@@ -152,9 +204,16 @@ const EmpleadoDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-warning text-white mb-4">
-              <div className="card-body"><i className="fas fa-user-edit"></i> Editar Perfil </div>
+              <div className="card-body">
+                <i className="fas fa-user-edit"></i> Perfil empleado
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-              <Link className="small text-white stretched-link" to="/editarusuario">Editar</Link>
+                <Link
+                  className="small text-white stretched-link"
+                  to="/editarusuario"
+                >
+                  Editar datos
+                </Link>
                 <div className="small text-white">
                   {" "}
                   <i className="fas fa-angle-right"></i>{" "}
@@ -164,23 +223,39 @@ const EmpleadoDashboard = () => {
           </div>
           <div className="col-xl-3 col-md-6">
             <div className="card bg-success text-white mb-4">
-              <div className="card-body"><i className="fas fa-calendar-check"></i> Gestionar Citas</div>
-              <div className="card-footer d-flex align-items-center justify-content-between">
-                <Link className="small text-white stretched-link" to="/citas">Todas las citas</Link>
-                <div className="small text-white">
-                  {" "}
-                  <i className="fas fa-angle-right"></i>
+              <div className="card-body">
+                <i className="fas fa-calendar-check"></i> Gestión Citas
+              </div>
+              <div className="card-footer">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <Link className="small text-white" to="/citas">
+                    Todas las citas
+                  </Link>
+                  <div className="small text-white">
+                    <i className="fas fa-angle-right"></i>
+                  </div>
+                </div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <Link className="small text-white" to="/crearcita">
+                    Crear cita
+                  </Link>
+                  <div className="small text-white">
+                    <i className="fas fa-angle-right"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div className="col-xl-3 col-md-6">
             <div className="card bg-secondary text-white mb-4">
-              <div className="card-body"><i className="fas fa-calendar-alt me-1"></i>Trabajos Realizados</div>
+              <div className="card-body">
+                <i className="fas fa-calendar-alt me-1"></i>Gestión Pacientes
+              </div>
               <div className="card-footer d-flex align-items-center justify-content-between">
-                <a className="small text-white stretched-link" href="#">
-                  Ver
-                </a>
+              <Link className="small text-white" to="/crear-paciente">
+                    Registrar paciente
+                  </Link>
                 <div className="small text-white">
                   <i className="fas fa-angle-right"></i>
                 </div>
@@ -194,7 +269,7 @@ const EmpleadoDashboard = () => {
               <h1 className="mt-4">Panel del Empleado</h1>
               <ol className="breadcrumb mb-4">
                 <li className="breadcrumb-item active">
-                  Bienvenido {empleado && empleado.nombre}
+                  Hola {empleado && empleado.nombre}
                 </li>
               </ol>
               <div className="row">
@@ -216,7 +291,8 @@ const EmpleadoDashboard = () => {
                         <strong>Email:</strong> {empleado && empleado.email}
                       </p>
                       <p>
-                        <strong>Teléfono:</strong> {empleado && empleado.telefono}
+                        <strong>Teléfono:</strong>{" "}
+                        {empleado && empleado.telefono}
                       </p>
                     </div>
                   </div>
@@ -241,9 +317,15 @@ const EmpleadoDashboard = () => {
                           {citas.map((cita) => (
                             <tr key={cita.id}>
                               <td>
-                                {format(new Date(cita.inicio), "dd/MM/yyyy")}
+                                {format(parseISO(cita.inicio), "dd/MM/yyyy")}
                               </td>
-                              <td>{format(new Date(cita.inicio), "HH:mm")}</td>
+                              <td>
+                                {formatInTimeZone(
+                                  parseISO(cita.inicio),
+                                  "UTC",
+                                  "HH:mm"
+                                )}
+                              </td>
                               <td>
                                 {cita.paciente
                                   ? `${cita.paciente.nombre} ${cita.paciente.apellidos}`
@@ -257,14 +339,57 @@ const EmpleadoDashboard = () => {
                                   >
                                     Cancelada
                                   </button>
-                                ) : (
+                                ) : cita.estado === "Finalizada" ? (
                                   <button
-                                    className="btn btn-danger btn-sm"
-                                    title="Cancelar Cita"
-                                    onClick={() => handleCancelClick(cita.id)}
+                                    className="btn btn-success btn-sm"
+                                    disabled
                                   >
-                                    <i className="fas fa-times"></i>
+                                    Finalizada
                                   </button>
+                                ) : (
+                                  <>
+                                    <button
+                                      className="btn btn-danger btn-sm me-2"
+                                      title="Cancelar Cita"
+                                      onClick={() => handleCancelClick(cita.id)}
+                                    >
+                                      <i className="fas fa-times"></i>
+                                    </button>
+                                    <button
+                                      className="btn btn-warning btn-sm me-2"
+                                      title="Pasar a sala de espera"
+                                      onClick={() => handleWaitClick(cita.id)}
+                                      disabled={
+                                        cita.estado !== "Pendiente"
+                                      }
+                                    >
+                                      <i className="fas fa-clock"></i>
+                                    </button>
+                                    {(user.role === "2" || user.role === "3") && (
+                                      <>
+                                        <button
+                                          className="btn btn-info btn-sm me-2"
+                                          title="Pasar a consulta"
+                                          onClick={() => handleProcessClick(cita.id)}
+                                          disabled={
+                                            cita.estado !== "En Espera"
+                                          }
+                                        >
+                                          <i className="fas fa-user-md"></i>
+                                        </button>
+                                        <button
+                                          className="btn btn-success btn-sm"
+                                          title="Finalizar Cita"
+                                          onClick={() => handleFinishClick(cita.id)}
+                                          disabled={
+                                            cita.estado !== "En Proceso"
+                                          }
+                                        >
+                                          <i className="fas fa-check"></i>
+                                        </button>
+                                      </>
+                                    )}
+                                  </>
                                 )}
                               </td>
                             </tr>

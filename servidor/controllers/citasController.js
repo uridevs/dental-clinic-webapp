@@ -1,6 +1,7 @@
 // citasController.js
 const { sequelize, Cita, Paciente, Empleado, Tratamiento, Intervencion } = require("../database.js");
 const { Op } = require('sequelize');
+const Especialidad = require("../models/Especialidad.js");
 
 exports.crearCita = async (req, res) => {
     const { id_paciente, inicio, fin, id_empleado, id_tipo_tratamiento, notas } = req.body;
@@ -46,6 +47,28 @@ exports.crearCita = async (req, res) => {
         res.status(500).send(error.message);
     }
 };
+
+exports.listarCita = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const cita = await Cita.findOne({
+        where: { id },
+        include: [
+          { model: Paciente, attributes: ['nombre', 'apellidos', 'dni', 'email', 'telefono'], as: 'paciente' },
+          { model: Empleado, attributes: ['nombre', 'apellidos'], as: 'doctor' },
+          { model: Tratamiento, attributes: ['nombre_tratamiento', 'id_especialidad'], as: 'tratamiento' }
+        ]
+      });
+  
+      if (cita) {
+        res.json(cita);
+      } else {
+        res.status(404).send("Cita no encontrada");
+      }
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  };
 
 exports.listarCitas = async (req, res) => {
     try {
@@ -146,7 +169,7 @@ exports.modificarCita = async (req, res) => {
             const updatedCita = await Cita.findByPk(id);
             res.status(200).json(updatedCita);
         } else {
-            throw new Error($`Cita no encontrada: {error}`);
+            throw new Error(`Cita no encontrada: {error}`);
         }
     } catch (error) {
         res.status(500).send(error.message);

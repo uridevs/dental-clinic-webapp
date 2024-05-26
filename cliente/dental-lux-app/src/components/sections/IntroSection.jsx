@@ -4,10 +4,13 @@ const IntroSection = () => {
   return (
     <section id="intro" className="position-relative">
       <div className="banner d-flex">
+
         <img
           src="/images/banner-image-3.png"
           alt="banner"
           className="img-fluid"
+
+          
         />
 
         <div className="banner-content position-absolute">

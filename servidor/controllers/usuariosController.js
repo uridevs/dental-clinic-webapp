@@ -38,3 +38,29 @@ exports.cambiarPassword = async (req, res) => {
   }
 };
 
+exports.resetPassword = async (req, res) => {
+  const { id } = req.body;
+  const { role } = req.user;
+
+  if (role !== "1") {
+      return res.status(403).json({ message: "Acceso denegado: no tiene los permisos adecuados." });
+  }
+
+  try {
+      const usuario = await Usuario.findByPk(id);
+      if (!usuario) {
+          return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      const defaultPassword = usuario.role === "paciente" ? "Paciente1234." : "Empleado1234.";
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(defaultPassword, salt);
+
+      await Usuario.update({ password: hashedPassword }, { where: { id } });
+
+      res.json({ message: "Contraseña restablecida con éxito" });
+  } catch (error) {
+      res.status(500).json({ message: "Error al restablecer la contraseña", error });
+  }
+};
+

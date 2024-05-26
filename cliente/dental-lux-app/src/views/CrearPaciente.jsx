@@ -1,13 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Layout from "../layout/Layout";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const CrearEmpleado = () => {
+const CrearPaciente = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [datos, setDatos] = useState({
@@ -17,22 +18,11 @@ const CrearEmpleado = () => {
     telefono: "",
     dni: "",
     password: "",
-    id_categoria_profesional: "",
+    confirmPassword: "",
   });
-  const [categorias, setCategorias] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        const { data } = await api.get("/categorias");
-        setCategorias(data);
-      } catch (error) {
-        console.error("Error fetching categories", error);
-      }
-    };
-    fetchCategorias();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,8 +43,8 @@ const CrearEmpleado = () => {
       errors.telefono = "El teléfono es requerido";
     if (!validator.isLength(datos.password, { min: 8 }))
       errors.password = "La contraseña debe tener al menos 8 caracteres";
-    if (validator.isEmpty(datos.id_categoria_profesional))
-      errors.id_categoria_profesional = "La categoría profesional es requerida";
+    if (datos.password !== datos.confirmPassword)
+      errors.confirmPassword = "Las contraseñas no coinciden";
     return errors;
   };
 
@@ -76,43 +66,24 @@ const CrearEmpleado = () => {
       return;
     }
     try {
-      await api.post("/empleados", datos);
-      toast.success("Empleado creado con éxito", {
+      await api.post("/pacientes", datos);
+      toast.success("Paciente creado con éxito", {
         position: "top-center",
-        autoClose: 2500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark"
+        autoClose: 2600,
       });
       setTimeout(() => {
-        if (user.role === "paciente") {
-          navigate(`/paciente/${user.idEspecifico}`);
-        } else if (user.role === "1") {
-          navigate("/Administrador");
-        } else {
-          navigate(`/empleado/${user.idEspecifico}`);
-        }
-      }, 2500);
+        handleVolver();
+      }, 2600);
     } catch (error) {
-      toast.error("Error al crear el empleado", {
+      toast.error("Error al crear el paciente", {
         position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark"
+        autoClose: 3000,
       });
     }
   };
 
   return (
     <Layout>
-      <ToastContainer />
       <div className="container mt-5">
         <div className="d-flex justify-content-center gap-2 mb-4">
           <button className="btn btn-secondary" onClick={handleVolver}>
@@ -122,7 +93,7 @@ const CrearEmpleado = () => {
         <div className="row justify-content-center">
           <div className="col-md-6">
             <fieldset className="card p-4">
-              <legend className="card-title text-center">Crear Empleado</legend>
+              <legend className="card-title text-center">Crear Paciente</legend>
               <form onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                   <label htmlFor="dni" className="form-label">
@@ -135,6 +106,7 @@ const CrearEmpleado = () => {
                     className={`form-control ${errors.dni ? "is-invalid" : ""}`}
                     value={datos.dni}
                     onChange={handleChange}
+                    maxLength="9" // Limitar a 9 caracteres
                   />
                   {errors.dni && (
                     <div className="invalid-feedback">{errors.dni}</div>
@@ -216,62 +188,67 @@ const CrearEmpleado = () => {
                   <label htmlFor="password" className="form-label">
                     Contraseña:
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    className={`form-control ${
-                      errors.password ? "is-invalid" : ""
-                    }`}
-                    value={datos.password}
-                    onChange={handleChange}
-                  />
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      className={`form-control ${errors.password ? "is-invalid" : ""}`}
+                      value={datos.password}
+                      onChange={handleChange}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
                   {errors.password && (
                     <div className="invalid-feedback">{errors.password}</div>
                   )}
                 </div>
                 <div className="form-group mb-3">
-                  <label
-                    htmlFor="id_categoria_profesional"
-                    className="form-label"
-                  >
-                    Categoría Profesional:
+                  <label htmlFor="confirmPassword" className="form-label">
+                    Confirmar Contraseña:
                   </label>
-                  <select
-                    name="id_categoria_profesional"
-                    id="id_categoria_profesional"
-                    className={`form-control ${
-                      errors.id_categoria_profesional ? "is-invalid" : ""
-                    }`}
-                    value={datos.id_categoria_profesional}
-                    onChange={handleChange}
-                  >
-                    <option value="">Seleccione una categoría</option>
-                    {categorias.map((categoria) => (
-                      <option
-                        key={categoria.id_categoria_profesional}
-                        value={categoria.id_categoria_profesional}
+                  <div className="input-group">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      id="confirmPassword"
+                      className={`form-control ${errors.confirmPassword ? "is-invalid" : ""}`}
+                      value={datos.confirmPassword}
+                      onChange={handleChange}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       >
-                        {categoria.nombre_categoria}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.id_categoria_profesional && (
-                    <div className="invalid-feedback">
-                      {errors.id_categoria_profesional}
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
+                  </div>
+                  {errors.confirmPassword && (
+                    <div className="invalid-feedback">{errors.confirmPassword}</div>
                   )}
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  Crear Empleado
+                  Crear Paciente
                 </button>
               </form>
             </fieldset>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </Layout>
   );
 };
 
-export default CrearEmpleado;
+export default CrearPaciente;

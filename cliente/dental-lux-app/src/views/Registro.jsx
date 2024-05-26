@@ -47,17 +47,17 @@ const Registro = () => {
         setSuccess('Registrado correctamente. Redirigiendo...');
         setError('');
 
-        // Loguear al usuario automáticamente
+        // Logueamos al usuario automáticamente
         await login({ email, password: contrasena });
 
-        // Redirigir al usuario a su página de usuario
+        // Redirigimos al usuario a su panel de usuario
         setTimeout(() => {
           navigate(`/paciente/${response.data.nuevoPaciente.id_paciente}`);
-        }, 3500); // 3.5 segundos de retraso
+        }, 3000); // 3 segundos de retraso, si lo vemos largo modificar
       } catch (err) {
         setSuccess('');
         if (err.response && err.response.data.errors) {
-          setError('Error en el registro. Por favor, inténtelo de nuevo más tarde.');
+          setError('Error en el registro. Por favor, revise los datos e intentelo de nuevo.');
         } else {
           console.error(err);
         }

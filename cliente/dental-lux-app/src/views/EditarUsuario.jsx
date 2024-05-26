@@ -1,8 +1,11 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from "../layout/Layout";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
+import validator from "validator";
 
 const EditarUsuario = () => {
   const { user } = useContext(AuthContext);
@@ -15,7 +18,6 @@ const EditarUsuario = () => {
     id_categoria_profesional: "",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +32,16 @@ const EditarUsuario = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error fetching usuario data:", error);
-        setError("Error al cargar la información del usuario");
+        toast.error("Error al cargar la información del usuario", {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark"
+        });
         setLoading(false);
       }
     };
@@ -43,8 +54,67 @@ const EditarUsuario = () => {
     setDatos({ ...datos, [name]: value });
   };
 
+  const validateFields = () => {
+    if (!validator.isEmail(datos.email)) {
+      toast.error("Correo electrónico inválido", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      return false;
+    }
+    if (validator.isEmpty(datos.nombre)) {
+      toast.error("El nombre no puede estar vacío", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      return false;
+    }
+    if (validator.isEmpty(datos.apellidos)) {
+      toast.error("Los apellidos no pueden estar vacíos", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      return false;
+    }
+    if (validator.isEmpty(datos.telefono)) {
+      toast.error("El teléfono no puede estar vacío", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateFields()) {
+      return;
+    }
     try {
       await api.put(
         `/${user.role === "paciente" ? "pacientes" : "empleados"}/${
@@ -52,10 +122,31 @@ const EditarUsuario = () => {
         }`,
         datos
       );
-      navigate(user.role === "paciente" ? `/paciente/${user.idEspecifico}` : `/empleado/${user.idEspecifico}`);
+      toast.success("Información del usuario actualizada correctamente", {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      setTimeout(() => {
+        navigate(user.role === "paciente" ? `/paciente/${user.idEspecifico}` : `/empleado/${user.idEspecifico}`);
+      }, 2500);
     } catch (error) {
       console.error("Error updating usuario data:", error);
-      setError("Error al actualizar la información del usuario");
+      toast.error("Error al actualizar la información del usuario", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
     }
   };
 
@@ -67,13 +158,10 @@ const EditarUsuario = () => {
     return <div>Cargando...</div>;
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <Layout>
       <div className="container mt-5">
+        <ToastContainer />
         <div className="text-center">
           <div className="d-flex justify-content-center gap-2 mb-4">
             <button className="btn btn-secondary" onClick={handleVolver}>

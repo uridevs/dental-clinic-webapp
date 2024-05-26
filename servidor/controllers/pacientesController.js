@@ -51,7 +51,6 @@ exports.crearPaciente = async (req, res) => {
       dni,
       telefono,
       email,
-      fecha_alta,
       password
     } = req.body;
 
@@ -66,6 +65,7 @@ exports.crearPaciente = async (req, res) => {
       role: 'paciente'
     }, { transaction: t });
 
+    const fecha_alta = new Date();
     // Crea el paciente vinculado al usuario creado
     const nuevoPaciente = await Paciente.create({
       nombre,

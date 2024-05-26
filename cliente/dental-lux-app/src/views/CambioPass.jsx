@@ -1,5 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import Layout from "../layout/Layout";
 import api from "../api/api";
 import { AuthContext } from "../context/AuthContext";
@@ -12,8 +14,6 @@ const CambioPass = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -31,13 +31,46 @@ const CambioPass = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (currentPassword === newPassword) {
+      toast.error("La nueva contraseña no puede ser igual a la actual", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
+      return;
+    }
+
     if (newPassword !== confirmNewPassword) {
-      setError("Las nuevas contraseñas no coinciden");
+      toast.error("Las nuevas contraseñas no coinciden", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
       return;
     }
 
     if (!validator.isStrongPassword(newPassword)) {
-      setError("La nueva contraseña no es suficientemente segura");
+      toast.error("La nueva contraseña no es suficientemente segura", {
+        position: "bottom-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
       return;
     }
 
@@ -56,16 +89,54 @@ const CambioPass = () => {
         }
       );
       setLoading(false);
-      setSuccess("Contraseña cambiada con éxito");
+      toast.success("Contraseña cambiada con éxito", {
+        position: "top-center",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      });
       setTimeout(() => {
         handleVolver();
-      }, 2000);
+      }, 2500);
     } catch (error) {
       setLoading(false);
-      if (error.response && error.response.data.errors) {
-        setError(error.response.data.errors.map((err) => err.msg).join(", "));
+      if (error.response && error.response.status === 400) {
+        toast.error("Contraseña actual incorrecta", {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark"
+        });
+      } else if (error.response && error.response.data.errors) {
+        toast.error(error.response.data.errors.map((err) => err.msg).join(", "), {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark"
+        });
       } else {
-        setError("Error al cambiar la contraseña");
+        toast.error("Error al cambiar la contraseña", {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark"
+        });
       }
     }
   };
@@ -73,6 +144,7 @@ const CambioPass = () => {
   return (
     <Layout>
       <div className="container mt-5">
+        <ToastContainer />
         <div className="row justify-content-center">
           <div className="col-md-6">
             <fieldset className="card p-4">
@@ -84,63 +156,73 @@ const CambioPass = () => {
                   <label htmlFor="currentPassword" className="form-label">
                     Contraseña actual:
                   </label>
-                  <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    name="currentPassword"
-                    id="currentPassword"
-                    className="form-control"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="btn position-absolute top-50 end-0 translate-middle-y"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+                  <div className="input-group">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      name="currentPassword"
+                      id="currentPassword"
+                      className="form-control"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      >
+                        {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div className="form-group mb-3 position-relative">
                   <label htmlFor="newPassword" className="form-label">
                     Nueva contraseña:
                   </label>
-                  <input
-                    type={showNewPassword ? "text" : "password"}
-                    name="newPassword"
-                    id="newPassword"
-                    className="form-control"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="btn position-absolute top-50 end-0 translate-middle-y"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+                  <div className="input-group">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      name="newPassword"
+                      id="newPassword"
+                      className="form-control"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div className="form-group mb-3 position-relative">
                   <label htmlFor="confirmNewPassword" className="form-label">
                     Confirmar nueva contraseña:
                   </label>
-                  <input
-                    type={showConfirmNewPassword ? "text" : "password"}
-                    name="confirmNewPassword"
-                    id="confirmNewPassword"
-                    className="form-control"
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="btn position-absolute top-50 end-0 translate-middle-y"
-                    onClick={() =>
-                      setShowConfirmNewPassword(!showConfirmNewPassword)
-                    }
-                  >
-                    {showConfirmNewPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+                  <div className="input-group">
+                    <input
+                      type={showConfirmNewPassword ? "text" : "password"}
+                      name="confirmNewPassword"
+                      id="confirmNewPassword"
+                      className="form-control"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    />
+                    <div className="input-group-append">
+                      <button
+                        type="button"
+                        className="btn btn-outline-secondary"
+                        onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                      >
+                        {showConfirmNewPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <button
                   type="submit"
@@ -156,12 +238,6 @@ const CambioPass = () => {
                 >
                   Volver
                 </button>
-                {error && (
-                  <div className="alert alert-danger mt-3">{error}</div>
-                )}
-                {success && (
-                  <div className="alert alert-success mt-3">{success}</div>
-                )}
               </form>
             </fieldset>
           </div>

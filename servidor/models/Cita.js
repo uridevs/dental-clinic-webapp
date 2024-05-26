@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true
         }
       }, {
-          timestamps: false // Deshabilitar createdAt y updatedAt
+          timestamps: false // Deshabilitar createdAt y updatedAt, daba problemas
       });
 
   Cita.associate = function(models) {

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../layout/Layout";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 const PacienteDashboard = () => {
   const { id } = useParams();
@@ -162,7 +163,7 @@ const PacienteDashboard = () => {
             </div>
           </div>
           <div className="col-xl-3 col-md-6">
-            <div className="card bg-dark text-white mb-4">
+            <div className="card bg-secondary text-white mb-4">
               <div className="card-body">
                 <i className="fas fa-calendar-alt me-1"></i>Mis Citas
               </div>
@@ -231,9 +232,9 @@ const PacienteDashboard = () => {
                           {citasFuturas.map((cita) => (
                             <tr key={cita.id}>
                               <td>
-                                {format(new Date(cita.inicio), "dd/MM/yyyy")}
+                                {format(parseISO(cita.inicio), "dd/MM/yyyy")}
                               </td>
-                              <td>{format(new Date(cita.inicio), "HH:mm")}</td>
+                              <td>{formatInTimeZone(parseISO(cita.inicio), 'UTC', "HH:mm")}</td>
                               <td>
                                 {cita.doctor
                                   ? `${cita.doctor.nombre} ${cita.doctor.apellidos}`
